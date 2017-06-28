@@ -6,6 +6,8 @@ package com.vasivkov.chat.common;
 public class AutorizationRequest extends AbstractMessage {
     private String login;
     private String password;
+    private String city;
+    private String mail;
 
 
     public AutorizationRequest(String login, String password) {
@@ -17,15 +19,15 @@ public class AutorizationRequest extends AbstractMessage {
         return login;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getCity() {
+        return city;
+    }
+
+    public String getMail() {
+        return mail;
     }
 }
