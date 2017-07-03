@@ -3,7 +3,7 @@ package com.vasivkov.chat.common;
 /**
  * Created by vasya on 19/06/17.
  */
-public class AutorizationRequest extends AbstractMessage {
+public class AutorizationRequest extends Request {
     private String login;
     private String password;
     private String city;

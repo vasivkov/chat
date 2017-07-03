@@ -3,7 +3,7 @@ package com.vasivkov.chat.common;
 /**
  * Created by vasya on 24/06/17.
  */
-public class RegistrationRequest extends AbstractMessage {
+public class RegistrationRequest extends Request {
     String login;
     String password;
     String city;
