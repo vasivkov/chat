@@ -35,11 +35,11 @@ public class ConsoleUtil {
             String login = br.readLine();
             System.out.print("Think up the password: ");
             String password = br.readLine();
-            System.out.print("Where do you live (our city): ");
-            String city = br.readLine();
-            System.out.print("Your mail: ");
-            String mail = br.readLine();
-            return new RegistrationRequest(login, password, city, mail);
+//            System.out.print("Where do you live (our city): ");
+//            String city = br.readLine();
+//            System.out.print("Your mail: ");
+//            String mail = br.readLine();
+            return new RegistrationRequest(login, password);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

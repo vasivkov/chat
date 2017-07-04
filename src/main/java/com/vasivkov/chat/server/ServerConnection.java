@@ -10,17 +10,16 @@ import java.net.Socket;
 /**
  * Created by vasya on 24/06/17.
  */
-public class Connection implements Runnable {
+public class ServerConnection implements Runnable {
 
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
 
-    public Connection(Socket socket) {
+    public ServerConnection(Socket socket) {
         try {
-            System.out.println("работает");
-            ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
-            System.out.println("не работает");
+            ois = new ObjectInputStream(socket.getInputStream());
+            System.out.println("потоки созданы");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -29,16 +28,21 @@ public class Connection implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        System.out.println("Заходим в Run");
+        boolean tryClose = false;
+        while (!tryClose) {
             try {
+
                 Object object = ois.readObject();
-                if(object instanceof Request){
+                if (object instanceof Request) {
                     Request request = (Request) object;
+
                     Response response = MessageHandler.handlerOfRequest(request);
                     oos.writeObject(response);
                     oos.flush();
-
+                    tryClose = true;
                 }
+
 //                if (object instanceof Message){
 //                    // может ли пользователь отправить что-то кроме сообщения после регистрации???
 //

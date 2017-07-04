@@ -18,6 +18,12 @@ public class Client implements Serializable, Listener {
         }
         ClientConnection clientConnection = new ClientConnection(socket);
         clientConnection.connect();
+        System.out.println("Клиент зарегистрирован... или авторизован...");
+//        try {
+//            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
 
