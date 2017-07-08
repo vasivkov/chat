@@ -6,5 +6,4 @@ import java.io.Serializable;
  * Created by vasya on 24/06/17.
  */
 public abstract class Request implements Serializable{
-//    String login;
 }

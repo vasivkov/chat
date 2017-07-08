@@ -7,9 +7,10 @@ package com.vasivkov.chat.server;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Server {
-    static   ArrayList<String> listOfClient;
+    static List<ServerConnection> listOfClient;
 
 
     public static void main(String[] args) throws IOException {
@@ -24,7 +25,7 @@ public class Server {
             while (true) {
                 System.out.println("Waiting connection...");
                 Socket socket = serverSocket.accept();
-                System.out.println("Клиент присоединился...");
+                System.out.println("The client joined...");
                 Thread thread = new Thread(new ServerConnection(socket));
                 thread.start();
             }

@@ -17,7 +17,7 @@ public class ClientConnection {
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
            br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("потоки клиента созданы");
+            System.out.println("Streams of client created");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -29,7 +29,7 @@ public class ClientConnection {
 
         boolean finished = false;
             while (!finished) {
-                System.out.println("For registration: R, For autariation A, For exit !E!");
+                System.out.println("For registration: R, For autoriation: A, For exit: E");
                 String choice = "";
                 try {
                     choice = br.readLine();
@@ -38,6 +38,9 @@ public class ClientConnection {
                 }
 
                 Request rq = null; // потом сделать запрос выхода
+                if(choice.equalsIgnoreCase("E")){
+                    rq = ConsoleUtil.dataForCloseingConnection(br);
+                }
                 if (choice.equalsIgnoreCase("R")) {
                     rq = ConsoleUtil.dataForRegistration(br);
                 }
@@ -47,13 +50,16 @@ public class ClientConnection {
                 try {
                     oos.writeObject(rq);
                     oos.flush();
-                    System.out.println("Данные отправлены");
                     Object object = ois.readObject();
                     if (object instanceof Response) {
                         Response response = (Response) object;
                         if (response.isResult()) {
+                            System.out.println("You are registered... or authorized...");
+                            Thread writingThread = new Thread(new ThreadForWritingMessages(oos, br));
+                            Thread readingThread = new Thread(new ThreadForReadingMessages(ois));
+                            writingThread.start();
+                            readingThread.start();
                             finished = true;
-                            System.out.println("Success");
                         } else {
                             System.out.println("Problems...");
                         }
@@ -63,32 +69,8 @@ public class ClientConnection {
                     e.printStackTrace();
                 }
             }
+
+
         }
 
-//        if (choice.equals("A")) {
-//            AutorizationRequest autorizationRequest = ConsoleUtil.dataForAutorization(br);
-//            while (finished) {
-//                try {
-//                    oos.writeObject(autorizationRequest);
-//                    oos.flush();
-//                    Object object = ois.readObject();
-//                    if (object instanceof AutorizationResponse) {
-//                        AutorizationResponse autorizationResponse = (AutorizationResponse) object;
-//                        if (autorizationResponse.isResult()) {
-//                            finished = true;
-//                        } else {
-//                            System.out.println("Incorrect name or password");
-//                        }
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-
-
     }
-
-
-//}

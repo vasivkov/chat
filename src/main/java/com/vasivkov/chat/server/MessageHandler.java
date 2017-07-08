@@ -2,42 +2,38 @@ package com.vasivkov.chat.server;
 
 import com.vasivkov.chat.common.*;
 
-/**
- * Created by vasya on 01/07/17.
- */
+import java.io.IOException;
+
+
 public class MessageHandler {
-    public static Response handlerOfRequest(Request request) {
-        String login ;
+    public static Response handlerOfRequest(Request request, ServerConnection serverConnection) {
+        String login;
         String password;
+        boolean result = true; // TODO
         if (request instanceof AutorizationRequest) {
             login = ((AutorizationRequest) request).getLogin();
             password = ((AutorizationRequest) request).getPassword();
             if (ActiveUsers.users.containsKey(login) && ActiveUsers.users.get(login).equals(password)) {
-                Server.listOfClient.add(login);
-                return  new Response(true);
+                Server.listOfClient.add(serverConnection);
+                serverConnection.setLogin(login);
             } else {
-                return new Response(false);
+                result = false;
             }
         }
-        if(request instanceof RegistrationRequest){
+
+        if (request instanceof RegistrationRequest) {
             login = ((RegistrationRequest) request).getLogin();
             password = ((RegistrationRequest) request).getPassword();
-            if(ActiveUsers.users.containsKey(login)){
-                return new Response(false);
-            }else{
+            if (ActiveUsers.users.containsKey(login)) {
+                result = false;
+            } else {
                 ActiveUsers.users.put(login, password);
-                System.out.println(ActiveUsers.users);
-               Server.listOfClient.add(login);
-                System.out.println(Server.listOfClient);
-                return  new Response(true);
+                Server.listOfClient.add(serverConnection);
+                serverConnection.setLogin(login);
             }
-        }else {
-            throw  new RuntimeException(); // TODO
         }
 
+        return new Response(result);
+
     }
-
-
-
-
 }

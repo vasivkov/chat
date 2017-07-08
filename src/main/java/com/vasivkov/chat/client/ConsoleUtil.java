@@ -1,6 +1,8 @@
 package com.vasivkov.chat.client;
 
 import com.vasivkov.chat.common.AutorizationRequest;
+import com.vasivkov.chat.common.ClosedConnectionRequest;
+import com.vasivkov.chat.common.Message;
 import com.vasivkov.chat.common.RegistrationRequest;
 
 import java.io.BufferedReader;
@@ -8,9 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
-/**
- * Created by vasya on 28/06/17.
- */
 public class ConsoleUtil {
 
 
@@ -43,6 +42,19 @@ public class ConsoleUtil {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public static ClosedConnectionRequest dataForCloseingConnection (BufferedReader br){
+
+        return new ClosedConnectionRequest(true);
+    }
+
+    public static Message inputTextForMessage (BufferedReader br){
+        try {
+            String text = br.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  null;
     }
 }

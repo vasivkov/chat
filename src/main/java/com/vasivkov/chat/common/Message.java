@@ -12,11 +12,18 @@ public class Message extends Request {
         this.login = login;
     }
 
-    public String getText() {
-        return text;
-    }
 
     public String getLogin() {
         return login;
     }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+
 }
