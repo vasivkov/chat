@@ -19,12 +19,13 @@ public class ThreadForReadingMessages implements Runnable {
     @Override
     public void run() {
         while (true) {
-            Object object = null;
+            Object object;
             try {
                 object = ois.readObject();
             } catch (Exception e) {
+                System.out.println("Socket closed");
                 e.printStackTrace();
-
+                return;
             }
             if (object instanceof Message) {
                 Message message = (Message) object;

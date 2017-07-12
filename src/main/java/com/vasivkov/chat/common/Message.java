@@ -12,6 +12,9 @@ public class Message extends Request {
         this.login = login;
     }
 
+    public Message(String text) {
+        this.text = text;
+    }
 
     public String getLogin() {
         return login;

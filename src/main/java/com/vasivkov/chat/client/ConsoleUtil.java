@@ -44,17 +44,9 @@ public class ConsoleUtil {
         }
     }
 
-    public static ClosedConnectionRequest dataForCloseingConnection (BufferedReader br){
-
-        return new ClosedConnectionRequest(true);
+    public static ClosedConnectionRequest dataForCloseingConnection (){
+        System.out.println("BYE!");
+        return new ClosedConnectionRequest();
     }
 
-    public static Message inputTextForMessage (BufferedReader br){
-        try {
-            String text = br.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return  null;
-    }
 }

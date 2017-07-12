@@ -1,14 +1,13 @@
 package com.vasivkov.chat.client;
 
+import com.vasivkov.chat.common.ClosedConnectionRequest;
 import com.vasivkov.chat.common.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Objects;
 
-/**
- * Created by vasya on 05/07/17.
- */
 public class ThreadForWritingMessages implements Runnable{
     private ObjectOutputStream oos;
     private BufferedReader br;
@@ -21,13 +20,22 @@ public class ThreadForWritingMessages implements Runnable{
     @Override
     public void run() {
         System.out.println("Please, write your message");
-        try {
-            String text = br.readLine();
-            Message message = new Message(text, "");
-            oos.writeObject(message);
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                String text = br.readLine();
+                if(text.equalsIgnoreCase("E")){
+                    oos.writeObject(new ClosedConnectionRequest());
+                    oos.flush();
+                    return;
+                }
+                Message message = new Message(text);
+                if(!"".equals(text)) {
+                    oos.writeObject(message);
+                    oos.flush();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

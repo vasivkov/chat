@@ -6,18 +6,19 @@ import java.io.*;
 import java.net.Socket;
 
 public class ClientConnection {
+    private Socket socket;
 
-    ObjectInputStream ois;
-    ObjectOutputStream oos;
-    BufferedReader br;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
+    private BufferedReader br;
 
-    public ClientConnection(Socket socket) {
+    ClientConnection(Socket socket) {
+        this.socket = socket;
         try {
 
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
            br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Streams of client created");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -25,7 +26,7 @@ public class ClientConnection {
 
 
 
-    public void connect() {
+    void connect() {
 
         boolean finished = false;
             while (!finished) {
@@ -39,7 +40,9 @@ public class ClientConnection {
 
                 Request rq = null; // потом сделать запрос выхода
                 if(choice.equalsIgnoreCase("E")){
-                    rq = ConsoleUtil.dataForCloseingConnection(br);
+
+                    rq = ConsoleUtil.dataForCloseingConnection();
+
                 }
                 if (choice.equalsIgnoreCase("R")) {
                     rq = ConsoleUtil.dataForRegistration(br);
@@ -50,6 +53,10 @@ public class ClientConnection {
                 try {
                     oos.writeObject(rq);
                     oos.flush();
+                    if(rq instanceof ClosedConnectionRequest){
+                        socket.close();
+                        return;
+                    }
                     Object object = ois.readObject();
                     if (object instanceof Response) {
                         Response response = (Response) object;
