@@ -4,6 +4,7 @@ import com.vasivkov.chat.common.AutorizationRequest;
 import com.vasivkov.chat.common.ClosedConnectionRequest;
 import com.vasivkov.chat.common.Message;
 import com.vasivkov.chat.common.RegistrationRequest;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class ConsoleUtil {
-
+public static final Logger LOGGER = Logger.getLogger(ConsoleUtil.class.getName());
 
     public static AutorizationRequest dataForAutorization(BufferedReader br) {
 
@@ -22,6 +23,7 @@ public class ConsoleUtil {
             String password = br.readLine();
             return new AutorizationRequest(login, password);
         } catch (IOException e) {
+            LOGGER.error("Failed to read data from console to autorization", e);
             throw new RuntimeException(e);
         }
 
@@ -40,6 +42,7 @@ public class ConsoleUtil {
 //            String mail = br.readLine();
             return new RegistrationRequest(login, password);
         } catch (IOException e) {
+            LOGGER.error("Failed to read data from console to autorization", e);
             throw new RuntimeException(e);
         }
     }

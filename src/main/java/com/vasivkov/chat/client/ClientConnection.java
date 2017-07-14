@@ -22,7 +22,7 @@ public class ClientConnection {
             oos = new ObjectOutputStream(socket.getOutputStream());
            br = new BufferedReader(new InputStreamReader(System.in));
         } catch (IOException e) {
-            LOGGER.fatal("Failed to create Streams for Reading and Writing messages", e);
+            LOGGER.fatal("Failed to create Streams for reading and writing messages", e);
             throw new RuntimeException(e);
         }
     }
@@ -38,10 +38,10 @@ public class ClientConnection {
                 try {
                     choice = br.readLine();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Failed to read from console", e);
                 }
 
-                Request rq = null; // потом сделать запрос выхода
+                Request rq = null;
                 if(choice.equalsIgnoreCase("E")){
 
                     rq = ConsoleUtil.dataForCloseingConnection();
@@ -58,6 +58,7 @@ public class ClientConnection {
                     oos.flush();
                     if(rq instanceof ClosedConnectionRequest){
                         socket.close();
+                        LOGGER.info("Socket has closed.");
                         return;
                     }
                     Object object = ois.readObject();
@@ -76,8 +77,7 @@ public class ClientConnection {
                     }
 
                 } catch (Exception e) {
-                    LOGGER.error("Failed to recibir Responce from Server");
-                    e.printStackTrace();
+                    LOGGER.error("Failed to get responce from server");
                 }
             }
 

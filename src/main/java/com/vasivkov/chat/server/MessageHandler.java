@@ -16,7 +16,7 @@ public class MessageHandler {
             if (ActiveUsers.users.containsKey(login) && ActiveUsers.users.get(login).equals(password)) {
                 Server.mapOfClient.put(login, serverConnection);
                 serverConnection.setLogin(login);
-                LOGGER.info("Client " + login + " Autorizated");
+                LOGGER.info("Client " + login + " autorizated");
             } else {
                 result = false;
             }
@@ -31,7 +31,7 @@ public class MessageHandler {
                 ActiveUsers.users.put(login, password);
                 Server.mapOfClient.put(login, serverConnection);
                 serverConnection.setLogin(login);
-                LOGGER.info("Client " + login + " Registrated");
+                LOGGER.info("Client " + login + " registrated");
             }
         }
 

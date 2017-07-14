@@ -63,14 +63,13 @@ public class Server {
     private void waitConnection(ServerSocket serverSocket) {
         try {
             while (true) {
-                System.out.println("Waiting connection...");
+                LOGGER.info("The client " + serverSocket + " joined");
                 Socket socket = serverSocket.accept();
-                System.out.println("The client joined...");
                 Thread thread = new Thread(new ServerConnection(socket));
                 thread.start();
             }
         } catch (IOException e) {
-            LOGGER.error("Failed to connect Client", e);
+            LOGGER.error("Failed to connect client", e);
         }
     }
 

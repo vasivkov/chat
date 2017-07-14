@@ -23,8 +23,9 @@ public class ThreadForWritingMessages implements Runnable{
     public void run() {
         System.out.println("Please, write your message");
         while (true) {
+            String text = null;
             try {
-                String text = br.readLine();
+                text = br.readLine();
                 if(text.equalsIgnoreCase("E")){
                     oos.writeObject(new ClosedConnectionRequest());
                     oos.flush();
@@ -36,8 +37,11 @@ public class ThreadForWritingMessages implements Runnable{
                     oos.flush();
                 }
             } catch (IOException e) {
-
-                e.printStackTrace();
+                if(text == null){
+                    LOGGER.error("Failed to read message  from console", e);
+                }else {
+                    LOGGER.error("Failed to send message to server", e);
+                }
             }
         }
     }

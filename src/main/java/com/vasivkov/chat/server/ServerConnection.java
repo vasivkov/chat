@@ -33,7 +33,7 @@ public class ServerConnection implements Runnable {
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            LOGGER.fatal("Failed to create Streams", e);
+            LOGGER.fatal("Failed to create streams", e);
             throw new RuntimeException(e);
         }
     }
@@ -67,7 +67,7 @@ public class ServerConnection implements Runnable {
             }
 
         } catch (Exception e) {
-            LOGGER.error("Failed to read from Socket", e);
+            LOGGER.error("Failed to read from socket", e);
 
         } finally {
             IOUtils.closeQuietly(ois);
@@ -81,7 +81,7 @@ public class ServerConnection implements Runnable {
             outputStream.writeObject(o);
             outputStream.flush();
         } catch (IOException e) {
-            LOGGER.error("Failed to send " + o, e);
+            LOGGER.error("Failed to send  message of " + o.getClass().getSimpleName(), e);
         }
     }
 
@@ -100,7 +100,7 @@ public class ServerConnection implements Runnable {
             } catch (IOException e) {
                 tries++;
                 if(tries == times) {
-                    LOGGER.error("Failed to send message");
+                    LOGGER.error("Failed to send message of " + o.getClass().getSimpleName());
                 }
                 e.printStackTrace();
             }
