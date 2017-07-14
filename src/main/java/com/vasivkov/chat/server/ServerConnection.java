@@ -2,6 +2,7 @@ package com.vasivkov.chat.server;
 
 import com.vasivkov.chat.common.*;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,6 +17,7 @@ public class ServerConnection implements Runnable {
     private String login;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
+    private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
 
     public void setLogin(String login) {
         this.login = login;
@@ -31,9 +33,9 @@ public class ServerConnection implements Runnable {
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
+            LOGGER.fatal("Failed to create Streams", e);
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
@@ -42,6 +44,7 @@ public class ServerConnection implements Runnable {
         try {
             while (!isClientExit) {
                 Object object = ois.readObject();
+                LOGGER.info("Recieved message " + object);
                 if (object instanceof Message) {
                     Message message = (Message) object;
                     message.setLogin(login);
@@ -64,11 +67,12 @@ public class ServerConnection implements Runnable {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to read from Socket", e);
 
         } finally {
             IOUtils.closeQuietly(ois);
             IOUtils.closeQuietly(oos);
+            LOGGER.info("Streams are closed. Client " + login + " is disconnected");
         }
     }
 
@@ -77,7 +81,7 @@ public class ServerConnection implements Runnable {
             outputStream.writeObject(o);
             outputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to send " + o, e);
         }
     }
 
@@ -95,6 +99,9 @@ public class ServerConnection implements Runnable {
                 delivered = true;
             } catch (IOException e) {
                 tries++;
+                if(tries == times) {
+                    LOGGER.error("Failed to send message");
+                }
                 e.printStackTrace();
             }
         }

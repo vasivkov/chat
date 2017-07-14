@@ -1,9 +1,11 @@
 package com.vasivkov.chat.server;
 
 import com.vasivkov.chat.common.*;
+import org.apache.log4j.Logger;
 
 
 public class MessageHandler {
+    private static final Logger LOGGER = Logger.getLogger(MessageHandler.class.getName());
     public static Response handlerOfRequest(Request request, ServerConnection serverConnection) {
         String login;
         String password;
@@ -14,6 +16,7 @@ public class MessageHandler {
             if (ActiveUsers.users.containsKey(login) && ActiveUsers.users.get(login).equals(password)) {
                 Server.mapOfClient.put(login, serverConnection);
                 serverConnection.setLogin(login);
+                LOGGER.info("Client " + login + " Autorizated");
             } else {
                 result = false;
             }
@@ -28,6 +31,7 @@ public class MessageHandler {
                 ActiveUsers.users.put(login, password);
                 Server.mapOfClient.put(login, serverConnection);
                 serverConnection.setLogin(login);
+                LOGGER.info("Client " + login + " Registrated");
             }
         }
 

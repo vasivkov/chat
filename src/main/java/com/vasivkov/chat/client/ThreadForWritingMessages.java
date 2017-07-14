@@ -2,6 +2,7 @@ package com.vasivkov.chat.client;
 
 import com.vasivkov.chat.common.ClosedConnectionRequest;
 import com.vasivkov.chat.common.Message;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.Objects;
 
 public class ThreadForWritingMessages implements Runnable{
+    public static final Logger LOGGER = Logger.getLogger(ThreadForWritingMessages.class.getName());
     private ObjectOutputStream oos;
     private BufferedReader br;
 
@@ -34,6 +36,7 @@ public class ThreadForWritingMessages implements Runnable{
                     oos.flush();
                 }
             } catch (IOException e) {
+
                 e.printStackTrace();
             }
         }

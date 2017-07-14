@@ -1,11 +1,13 @@
 package com.vasivkov.chat.client;
 
 import com.vasivkov.chat.common.*;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.Socket;
 
 public class ClientConnection {
+    public static final Logger LOGGER = Logger.getLogger(ClientConnection.class.getName());
     private Socket socket;
 
     private ObjectInputStream ois;
@@ -20,6 +22,7 @@ public class ClientConnection {
             oos = new ObjectOutputStream(socket.getOutputStream());
            br = new BufferedReader(new InputStreamReader(System.in));
         } catch (IOException e) {
+            LOGGER.fatal("Failed to create Streams for Reading and Writing messages", e);
             throw new RuntimeException(e);
         }
     }
@@ -73,6 +76,7 @@ public class ClientConnection {
                     }
 
                 } catch (Exception e) {
+                    LOGGER.error("Failed to recibir Responce from Server");
                     e.printStackTrace();
                 }
             }
