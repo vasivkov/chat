@@ -1,41 +1,32 @@
 package com.vasivkov.chat.server;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- * Created by vasya on 11/07/17.
- */
 public class ConnectTOMySQL {
-////    System.out.println("-------- MySQL JDBC Connection Testing ------------");
-//
-//    public static   void connectToDB(){
-//        try {
-//            Class.forName("com.mysql.jdbc.Driver");
-//        } catch (ClassNotFoundException e) {
-//            System.out.println("Where is your MySQL JDBC Driver?");
-//            e.printStackTrace();
-//            return;
-//        }
-//    }
-//
-//
-//        System.out.println("MySQL JDBC Driver Registered!");
-//    Connection connection = null;
-//
-//        try {
-//        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Users", "root", "");
-//
-//    } catch (SQLException e) {
-//        System.out.println("Connection Failed! Check output console");
-//        e.printStackTrace();
-//        return;
-//    }
-//
-//        if (connection != null) {
-//        System.out.println("You made it, take control your database now!");
-//    } else {
-//        System.out.println("Failed to make connection!");
-//    }
+    public static final Logger LOGGER =Logger.getLogger(ConnectTOMySQL.class.getName());
+
+    protected static Connection connectToDB(String DBName, String user, String password){
+        LOGGER.info("Try to connect to MySQL DB");
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            LOGGER.error("Failed to find JDBC driver");
+            throw new RuntimeException();
+        }
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + DBName, user, password);
+            LOGGER.info("Connecting to DB Success!" );
+        } catch (SQLException e) {
+            LOGGER.error("Connection Failed!", e);
+            throw new RuntimeException();
+        }
+        return connection;
+    }
+
 }
