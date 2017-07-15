@@ -5,28 +5,30 @@ package com.vasivkov.chat.common;
  */
 public class Message extends Request {
     private String text;
-    private String login;
+    private String author;
 
-    public Message(String text, String login) {
+    public Message(String text, String author) {
         this.text = text;
-        this.login = login;
+        this.author = author;
     }
 
     public Message(String text) {
         this.text = text;
     }
 
-    public String getLogin() {
-        return login;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getText() {
         return text;
     }
 
-
+    public String toString(){
+        return text;
+    }
 }

@@ -22,7 +22,7 @@ public class ClientConnection {
             oos = new ObjectOutputStream(socket.getOutputStream());
            br = new BufferedReader(new InputStreamReader(System.in));
         } catch (IOException e) {
-            LOGGER.fatal("Failed to create Streams for reading and writing messages", e);
+            LOGGER.fatal("Failed to create streams for reading and writing messages", e);
             throw new RuntimeException(e);
         }
     }
@@ -33,7 +33,7 @@ public class ClientConnection {
 
         boolean finished = false;
             while (!finished) {
-                System.out.println("For registration: R, For autoriation: A, For exit: E");
+                System.out.println("For registration: R, for autoriation: A, for exit: E");
                 String choice = "";
                 try {
                     choice = br.readLine();
@@ -77,7 +77,7 @@ public class ClientConnection {
                     }
 
                 } catch (Exception e) {
-                    LOGGER.error("Failed to get responce from server");
+                    LOGGER.error("Failed to get responce from server", e);
                 }
             }
 

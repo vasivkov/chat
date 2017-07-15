@@ -11,10 +11,7 @@ public class Client implements Serializable {
 
         ClientConnection clientConnection = new ClientConnection(socket);
         clientConnection.connect();
-
     }
-
-
-
 }
+
 

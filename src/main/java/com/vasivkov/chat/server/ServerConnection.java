@@ -47,7 +47,7 @@ public class ServerConnection implements Runnable {
                 LOGGER.info("Recieved message " + object);
                 if (object instanceof Message) {
                     Message message = (Message) object;
-                    message.setLogin(login);
+                    message.setAuthor(login);
                     if (!message.getText().equals("")) {
                         sendToAllClients(message);
                     }
