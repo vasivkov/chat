@@ -8,13 +8,14 @@ import java.io.ObjectOutputStream;
 /**
  * Created by vasya on 15/07/17.
  */
-public class SendMessage {
-    public static final Logger LOGGER = Logger.getLogger(SendMessage.class.getName());
+public class MessageTransportUtil {
+    public static final Logger LOGGER = Logger.getLogger(MessageTransportUtil.class.getName());
 
     public static void sendMessageNoGuarantee(Object o, ObjectOutputStream outputStream) {
         try {
             outputStream.writeObject(o);
             outputStream.flush();
+            LOGGER.info("Message delivered " + o);
         } catch (IOException e) {
             LOGGER.error("Failed to send  message of " + o, e);
         }
@@ -32,6 +33,7 @@ public class SendMessage {
                 outputStream.writeObject(o);
                 outputStream.flush();
                 delivered = true;
+                LOGGER.info("Message delivered " + o);
             } catch (IOException e) {
                 tries++;
                 if(tries == times) {

@@ -56,7 +56,7 @@ public class ServerConnection implements Runnable {
                 if ((object instanceof Request)) {
                     Request request = (Request) object;
                     Response response = MessageHandler.handlerOfRequest(request, this);
-                    SendMessage.sendMessageWithRepeat(response, oos, 5);
+                    MessageTransportUtil.sendMessageWithRepeat(response, oos, 5);
                 }
                 if (object instanceof ClosedConnectionRequest) {
                     Message message = new Message(login + " LEFT THE CHAT", "  ");
@@ -81,7 +81,7 @@ public class ServerConnection implements Runnable {
     private void sendToAllClients(Object o) {
         for (Map.Entry<String, ServerConnection> entry : Server.mapOfClient.entrySet()) {
             if (!login.equals(entry.getKey())) {
-                SendMessage.sendMessageNoGuarantee(o, entry.getValue().getOos());
+                MessageTransportUtil.sendMessageNoGuarantee(o, entry.getValue().getOos());
             }
         }
     }

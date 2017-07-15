@@ -36,4 +36,22 @@ public class Message extends Request {
                 ", author='" + author + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        if (text != null ? !text.equals(message.text) : message.text != null) return false;
+        return author != null ? author.equals(message.author) : message.author == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = text != null ? text.hashCode() : 0;
+        result = 31 * result + (author != null ? author.hashCode() : 0);
+        return result;
+    }
 }

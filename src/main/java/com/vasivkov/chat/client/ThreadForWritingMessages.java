@@ -2,13 +2,12 @@ package com.vasivkov.chat.client;
 
 import com.vasivkov.chat.common.ClosedConnectionRequest;
 import com.vasivkov.chat.common.Message;
-import com.vasivkov.chat.common.SendMessage;
+import com.vasivkov.chat.common.MessageTransportUtil;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Objects;
 
 public class ThreadForWritingMessages implements Runnable{
     public static final Logger LOGGER = Logger.getLogger(ThreadForWritingMessages.class.getName());
@@ -28,12 +27,12 @@ public class ThreadForWritingMessages implements Runnable{
             try {
                 text = br.readLine();
                 if(text.equalsIgnoreCase("E")){
-                    SendMessage.sendMessageNoGuarantee(new ClosedConnectionRequest(), oos);
+                    MessageTransportUtil.sendMessageNoGuarantee(new ClosedConnectionRequest(), oos);
                     return;
                 }
                 Message message = new Message(text);
                 if(!"".equals(text)) {
-                    SendMessage.sendMessageNoGuarantee(message, oos);
+                    MessageTransportUtil.sendMessageNoGuarantee(message, oos);
                 }
             } catch (IOException e) {
                LOGGER.error("Failed to sent message", e);
