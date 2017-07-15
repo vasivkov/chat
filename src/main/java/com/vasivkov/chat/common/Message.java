@@ -28,7 +28,12 @@ public class Message extends Request {
         return text;
     }
 
-    public String toString(){
-        return text;
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "text='" + text + '\'' +
+                ", author='" + author + '\'' +
+                '}';
     }
 }

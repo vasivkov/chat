@@ -54,8 +54,7 @@ public class ClientConnection {
                     rq = ConsoleUtil.dataForAutorization(br);
                 }
                 try {
-                    oos.writeObject(rq);
-                    oos.flush();
+                   SendMessage.sendMessageWithRepeat(rq, oos, 5);
                     if(rq instanceof ClosedConnectionRequest){
                         socket.close();
                         LOGGER.info("Socket has closed.");

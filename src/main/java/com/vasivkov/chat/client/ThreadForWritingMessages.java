@@ -2,6 +2,7 @@ package com.vasivkov.chat.client;
 
 import com.vasivkov.chat.common.ClosedConnectionRequest;
 import com.vasivkov.chat.common.Message;
+import com.vasivkov.chat.common.SendMessage;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -27,21 +28,15 @@ public class ThreadForWritingMessages implements Runnable{
             try {
                 text = br.readLine();
                 if(text.equalsIgnoreCase("E")){
-                    oos.writeObject(new ClosedConnectionRequest());
-                    oos.flush();
+                    SendMessage.sendMessageNoGuarantee(new ClosedConnectionRequest(), oos);
                     return;
                 }
                 Message message = new Message(text);
                 if(!"".equals(text)) {
-                    oos.writeObject(message);
-                    oos.flush();
+                    SendMessage.sendMessageNoGuarantee(message, oos);
                 }
             } catch (IOException e) {
-                if(text == null){
-                    LOGGER.error("Failed to read message  from console", e);
-                }else {
-                    LOGGER.error("Failed to send message to server", e);
-                }
+               LOGGER.error("Failed to sent message", e);
             }
         }
     }

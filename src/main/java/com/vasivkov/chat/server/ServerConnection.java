@@ -56,7 +56,7 @@ public class ServerConnection implements Runnable {
                 if ((object instanceof Request)) {
                     Request request = (Request) object;
                     Response response = MessageHandler.handlerOfRequest(request, this);
-                    sendMessageWithRepeat(response, oos, 5);
+                    SendMessage.sendMessageWithRepeat(response, oos, 5);
                 }
                 if (object instanceof ClosedConnectionRequest) {
                     Message message = new Message(login + " LEFT THE CHAT", "  ");
@@ -76,42 +76,12 @@ public class ServerConnection implements Runnable {
         }
     }
 
-    public void sendMessageNoGuarantee(Object o, ObjectOutputStream outputStream) {
-        try {
-            outputStream.writeObject(o);
-            outputStream.flush();
-        } catch (IOException e) {
-            LOGGER.error("Failed to send  message of " + o.getClass().getSimpleName(), e);
-        }
-    }
-
-    public void sendMessageWithRepeat(Object o, ObjectOutputStream outputStream, int times) {
-        if (times < 1) {
-            throw new IllegalArgumentException();
-        }
-        int tries = 0;
-        boolean delivered = false;
-
-        while (tries < times && !delivered) {
-            try {
-                outputStream.writeObject(o);
-                outputStream.flush();
-                delivered = true;
-            } catch (IOException e) {
-                tries++;
-                if(tries == times) {
-                    LOGGER.error("Failed to send message of " + o.getClass().getSimpleName());
-                }
-                e.printStackTrace();
-            }
-        }
-    }
 
 
     private void sendToAllClients(Object o) {
         for (Map.Entry<String, ServerConnection> entry : Server.mapOfClient.entrySet()) {
             if (!login.equals(entry.getKey())) {
-                sendMessageNoGuarantee(o, entry.getValue().getOos());
+                SendMessage.sendMessageNoGuarantee(o, entry.getValue().getOos());
             }
         }
     }
