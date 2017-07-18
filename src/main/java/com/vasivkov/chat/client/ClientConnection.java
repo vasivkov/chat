@@ -64,14 +64,14 @@ public class ClientConnection {
                     if (object instanceof Response) {
                         Response response = (Response) object;
                         if (response.isResult()) {
-                            System.out.println("You are registered... or authorized...");
+                            System.out.println(response.getResponseMessage());
                             Thread writingThread = new Thread(new ThreadForWritingMessages(oos, br));
                             Thread readingThread = new Thread(new ThreadForReadingMessages(ois));
                             writingThread.start();
                             readingThread.start();
                             finished = true;
                         } else {
-                            System.out.println("Problems...");
+                            System.out.println(response.getResponseMessage());
                         }
                     }
 

@@ -1,22 +1,19 @@
 package com.vasivkov.chat.server;
-
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.apache.log4j.Logger;
-
 import java.sql.*;
 
-public class ConnectTOMySQL implements UserDAO{
-    public static final Logger LOGGER =Logger.getLogger(ConnectTOMySQL.class.getName());
+public class ChatDao {
+    public static final Logger LOGGER =Logger.getLogger(ChatDao.class.getName());
     private static final String jdbcDriver = "com.mysql.jdbc.Driver";
     private static final String url = "jdbc:mysql://localhost:3306/Chat_DB";
     private static final String user = "root";
     private static final String password = "";
+    private static final String FIND_BY_LOGIN = "SELECT login, password FROM users WHERE login=?";
+    private static final String INSERT_USER = "INSERT INTO user (login, password, date_of_registration) VALUES(?, ?, ?)";
 
-    private static final String FIND_BY_LOGIN = "SELECT * FROM users WHERE login=?";
 
 
-
-    private Connection connectToDB(){
+    private Connection getConnection(){
         LOGGER.info("Try to connect to MySQL DB");
         try {
             Class.forName(jdbcDriver);
@@ -36,25 +33,20 @@ public class ConnectTOMySQL implements UserDAO{
         return connection;
     }
 
-    @Override
-    public User findByLogin(String login) {
+    public User findByLogin(String login) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try{
-            connection = connectToDB();
-            preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE LOGIN=?");
+            connection = getConnection();
+            preparedStatement = connection.prepareStatement( FIND_BY_LOGIN);
+            preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
                 User user = new User();
                 user.setLogin(resultSet.getString("login"));
                 user.setPassword(resultSet.getString("password"));
-                user.setDateOfRegistration(resultSet.getDate("dateOfregistration"));
-                user.setAge(resultSet.getInt("age"));
-                User var = user;
-                return var;
+                return user;
             }
-        }catch (SQLException e){
-            throw  new RuntimeException(e);
         }finally {
             close(connection);
             close(preparedStatement);
@@ -63,31 +55,26 @@ public class ConnectTOMySQL implements UserDAO{
         return null;
     }
 
-    @Override
-    public int insertUser(User user) {
+    public void insertUser(User user) throws  SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try{
-            connection = connectToDB();
-            preparedStatement = connection.prepareStatement("INSERT INTO user (login, password, dateOfRegistration, age) VALUES(?, ?, ?, ?)");
+            connection = getConnection();
+            preparedStatement = connection.prepareStatement(INSERT_USER);
             preparedStatement.setString(1, user.getLogin());
             preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setString(3, String.valueOf(user.getDateOfRegistration()));
-            preparedStatement.setString(4, String.valueOf(user.getAge()));
+            preparedStatement.setString(3, String.valueOf(user.getDateOfRegistration())); // TODO
+            preparedStatement.executeUpdate();
 
-            // TODO
-        }catch(SQLException e){
-            throw new RuntimeException(e);
         }finally {
             close(connection);
             close(preparedStatement);
         }
 
-        return 0;
     }
 
 
-    private static void close(Connection connection){
+    private  void close(Connection connection){
         if(connection != null){
             try{
                 connection.close();
@@ -97,7 +84,7 @@ public class ConnectTOMySQL implements UserDAO{
         }
     }
 
-    private static void close(Statement statement){
+    private  void close(Statement statement){
         if(statement != null){
             try{
                 statement.close();

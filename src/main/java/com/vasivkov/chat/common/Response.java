@@ -7,13 +7,23 @@ import java.io.Serializable;
  */
 public class Response implements Serializable {
     private boolean result;
+    private String responseMessage;
 
     public Response(boolean result) {
         this.result = result;
     }
 
+    public Response(boolean result, String responseMessage) {
+        this.result = result;
+        this.responseMessage = responseMessage;
+    }
+
     public boolean isResult() {
         return result;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
     }
 
     @Override
