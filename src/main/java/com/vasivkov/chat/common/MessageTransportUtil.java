@@ -5,11 +5,8 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-/**
- * Created by vasya on 15/07/17.
- */
 public class MessageTransportUtil {
-    public static final Logger LOGGER = Logger.getLogger(MessageTransportUtil.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MessageTransportUtil.class.getName());
 
     public static void sendMessageNoGuarantee(Object o, ObjectOutputStream outputStream) {
         try {
@@ -36,7 +33,7 @@ public class MessageTransportUtil {
                 LOGGER.info("Message delivered " + o);
             } catch (IOException e) {
                 tries++;
-                if(tries == times) {
+                if (tries == times) {
                     LOGGER.error("Failed to send message of " + o, e);
                 }
             }

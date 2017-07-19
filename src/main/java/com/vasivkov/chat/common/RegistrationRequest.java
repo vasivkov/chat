@@ -2,8 +2,8 @@ package com.vasivkov.chat.common;
 
 
 public class RegistrationRequest extends Request {
-   private String login;
-   private String password;
+    private String login;
+    private String password;
 
     public RegistrationRequest(String login, String password) {
         this.login = login;

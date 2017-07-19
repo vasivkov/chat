@@ -1,13 +1,10 @@
 package com.vasivkov.chat.common;
 
-/**
- * Created by vasya on 19/06/17.
- */
-public class AutorizationRequest extends Request {
+public class AuthorizationRequest extends Request {
     private String login;
     private String password;
 
-    public AutorizationRequest(String login, String password) {
+    public AuthorizationRequest(String login, String password) {
         this.login = login;
         this.password = password;
     }
@@ -22,7 +19,7 @@ public class AutorizationRequest extends Request {
 
     @Override
     public String toString() {
-        return "AutorizationRequest{" +
+        return "AuthorizationRequest{" +
                 "login='" + login + '\'' +
                 '}';
     }
@@ -32,10 +29,9 @@ public class AutorizationRequest extends Request {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AutorizationRequest that = (AutorizationRequest) o;
+        AuthorizationRequest that = (AuthorizationRequest) o;
 
-        if (login != null ? !login.equals(that.login) : that.login != null) return false;
-        return password != null ? password.equals(that.password) : that.password == null;
+        return (login != null ? login.equals(that.login) : that.login == null) && (password != null ? password.equals(that.password) : that.password == null);
     }
 
     @Override

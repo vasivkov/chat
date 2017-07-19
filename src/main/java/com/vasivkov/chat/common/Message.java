@@ -1,9 +1,8 @@
 package com.vasivkov.chat.common;
 
-/**
- * Created by vasya on 19/06/17.
- */
-public class Message extends Request {
+import java.io.Serializable;
+
+public class Message implements Serializable {
     private String text;
     private String author;
 
@@ -27,7 +26,6 @@ public class Message extends Request {
     public String getText() {
         return text;
     }
-
 
     @Override
     public String toString() {

@@ -9,7 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class ThreadForWritingMessages implements Runnable{
+public class ThreadForWritingMessages implements Runnable {
     public static final Logger LOGGER = Logger.getLogger(ThreadForWritingMessages.class.getName());
     private ObjectOutputStream oos;
     private BufferedReader br;
@@ -26,16 +26,16 @@ public class ThreadForWritingMessages implements Runnable{
             String text = null;
             try {
                 text = br.readLine();
-                if(text.equalsIgnoreCase("E")){
+                if (text.equalsIgnoreCase("E")) {
                     MessageTransportUtil.sendMessageNoGuarantee(new ClosedConnectionRequest(), oos);
                     return;
                 }
                 Message message = new Message(text);
-                if(!"".equals(text)) {
+                if (!"".equals(text)) {
                     MessageTransportUtil.sendMessageNoGuarantee(message, oos);
                 }
             } catch (IOException e) {
-               LOGGER.error("Failed to sent message", e);
+                LOGGER.error("Failed to sent message", e);
             }
         }
     }

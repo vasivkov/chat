@@ -1,10 +1,12 @@
 package com.vasivkov.chat.server;
+
 import org.apache.log4j.Logger;
+
 import java.sql.*;
 import java.text.SimpleDateFormat;
 
 public class ChatDao {
-    public static final Logger LOGGER =Logger.getLogger(ChatDao.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ChatDao.class.getName());
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private static final String URL = "jdbc:mysql://localhost:3306/chatUsers";
     private static final String USER = "root";
@@ -13,9 +15,7 @@ public class ChatDao {
     private static final String INSERT_USER = "INSERT INTO users (login, password, date_of_registration) VALUES(?, ?, ?)";
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-
-
-    private Connection getConnection(){
+    private Connection getConnection() {
         LOGGER.info("Try to connect to MySQL DB");
         try {
             Class.forName(JDBC_DRIVER);
@@ -35,34 +35,32 @@ public class ChatDao {
         return connection;
     }
 
-    public User findByLogin(String login) throws SQLException {
+    User findByLogin(String login) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        try{
+        try {
             connection = getConnection();
-            preparedStatement = connection.prepareStatement( FIND_BY_LOGIN);
+            preparedStatement = connection.prepareStatement(FIND_BY_LOGIN);
             preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 User user = new User();
                 user.setLogin(resultSet.getString("login"));
                 user.setPassword(resultSet.getString("password"));
                 return user;
-            }else {
+            } else {
                 return null;
             }
-        }finally {
+        } finally {
             close(connection);
             close(preparedStatement);
         }
-
-
     }
 
-    public void insertUser(User user) throws  SQLException {
+    void insertUser(User user) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        try{
+        try {
             connection = getConnection();
             preparedStatement = connection.prepareStatement(INSERT_USER);
             preparedStatement.setString(1, user.getLogin());
@@ -70,32 +68,29 @@ public class ChatDao {
             preparedStatement.setString(3, sdf.format(user.getDateOfRegistration())); // TODO
             preparedStatement.executeUpdate();
 
-        }finally {
+        } finally {
             close(connection);
             close(preparedStatement);
         }
-
     }
 
-
-    private  void close(Connection connection){
-        if(connection != null){
-            try{
+    private void close(Connection connection) {
+        if (connection != null) {
+            try {
                 connection.close();
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private  void close(Statement statement){
-        if(statement != null){
-            try{
+    private void close(Statement statement) {
+        if (statement != null) {
+            try {
                 statement.close();
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-
 }

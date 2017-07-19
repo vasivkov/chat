@@ -10,9 +10,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Map;
 
-/**
- * Created by vasya on 24/06/17.
- */
 public class ServerConnection implements Runnable {
     private String login;
     private ObjectInputStream ois;
@@ -26,7 +23,6 @@ public class ServerConnection implements Runnable {
     public ObjectOutputStream getOos() {
         return oos;
     }
-
 
     public ServerConnection(Socket socket) {
         try {
@@ -51,23 +47,20 @@ public class ServerConnection implements Runnable {
                     if (!message.getText().equals("")) {
                         sendToAllClients(message);
                     }
-                }else
-
-                if ((object instanceof Request)) {
-                    Request request = (Request) object;
-                    Response response = MessageHandler.handlerOfRequest(request);
-                    if(response.isResult()){
-
-                        Server.mapOfClient.put(login, this);
-                        System.out.println(Server.mapOfClient);
-                    }
-                    MessageTransportUtil.sendMessageWithRepeat(response, oos, 5);
-                }
-                if (object instanceof ClosedConnectionRequest) {
+                } else if (object instanceof ClosedConnectionRequest) {
                     Message message = new Message(login + " LEFT THE CHAT", "  ");
                     sendToAllClients(message);
                     Server.mapOfClient.remove(login);
+                    System.out.println(Server.mapOfClient);
                     isClientExit = true;
+                } else if (object instanceof Request) {
+                    Request request = (Request) object;
+                    Response response = MessageHandler.handlerOfRequest(request);
+                    if (response.isResult()) {
+                        login = request.getLogin();
+                        Server.mapOfClient.put(login, this);
+                    }
+                    MessageTransportUtil.sendMessageWithRepeat(response, oos, 5);
                 }
             }
 
@@ -88,6 +81,5 @@ public class ServerConnection implements Runnable {
             }
         }
     }
-
 }
 

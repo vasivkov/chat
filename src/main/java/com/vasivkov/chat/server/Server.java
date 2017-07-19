@@ -5,15 +5,11 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Server {
-    static Map<String,ServerConnection> mapOfClient;
+    static Map<String, ServerConnection> mapOfClient;
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     public static void main(String[] args) throws IOException {
