@@ -51,11 +51,16 @@ public class ServerConnection implements Runnable {
                     if (!message.getText().equals("")) {
                         sendToAllClients(message);
                     }
-                }
+                }else
 
                 if ((object instanceof Request)) {
                     Request request = (Request) object;
-                    Response response = MessageHandler.handlerOfRequest(request, this);
+                    Response response = MessageHandler.handlerOfRequest(request);
+                    if(response.isResult()){
+
+                        Server.mapOfClient.put(login, this);
+                        System.out.println(Server.mapOfClient);
+                    }
                     MessageTransportUtil.sendMessageWithRepeat(response, oos, 5);
                 }
                 if (object instanceof ClosedConnectionRequest) {
@@ -75,8 +80,6 @@ public class ServerConnection implements Runnable {
             LOGGER.info("Streams are closed. Client " + login + " is disconnected");
         }
     }
-
-
 
     private void sendToAllClients(Object o) {
         for (Map.Entry<String, ServerConnection> entry : Server.mapOfClient.entrySet()) {

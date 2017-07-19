@@ -9,58 +9,46 @@ import java.util.Date;
 
 public class MessageHandler {
     private static final Logger LOGGER = Logger.getLogger(MessageHandler.class.getName());
+    private static ChatDao chatDao = new ChatDao();
 
-    public static Response handlerOfRequest(Request request, ServerConnection serverConnection) {
-        String login;
-        String password;
-        boolean result = true;
-        String responseMessage = "";
-        if (request instanceof AutorizationRequest) {
-            login = ((AutorizationRequest) request).getLogin();
-            password = ((AutorizationRequest) request).getPassword();
-            ChatDao chatDao = new ChatDao();
-            try {
-                User user = chatDao.findByLogin(login);
-                if(user != null && user.getPassword().equals(password) ){
-                    responseMessage = "You are authorized!";
-                    LOGGER.info("Client " + login + " autorizated");
-                }else {
-                    result = false;
-                    responseMessage = "Incorrect login or pasword";
-                }
-            }catch (SQLException e){
-                result = false;
-                responseMessage = "Could not connect to the server. Please try again later.";
+
+    public static Response handlerOfRequest(Request request){
+        try {
+            if (request instanceof AutorizationRequest) {
+               return method1((AutorizationRequest) request);
             }
-
-        }
-
-        if (request instanceof RegistrationRequest) {
-            login = ((RegistrationRequest) request).getLogin();
-            password = ((RegistrationRequest) request).getPassword();
-            ChatDao chatDao = new ChatDao();
-            try {
-                if (chatDao.findByLogin(login) != null) {
-                    result = false;
-                    responseMessage = "Such login already exist";
-                } else {
-                    User user = new User();
-                    user.setDateOfRegistration(new Date());
-                    user.setLogin(login);
-                    user.setPassword(password);
-                    chatDao.insertUser(user);
-                    responseMessage = "You are registered!";
-                }
-
-            } catch (SQLException e) {
-                result = false;
-                responseMessage = "Could not connect to the server. Please try again later.";
+            if (request instanceof RegistrationRequest) {
+                return method2((RegistrationRequest) request);
             }
-
-
+        }catch (SQLException e){
+            LOGGER.error("Failed to handle request " + request, e);
+            return FactoryResponse.getServerErrorResponse();
         }
+        throw new IllegalArgumentException("Received message of unknown type " + request);
+    }
 
-        return new Response(result, responseMessage);
+    private static Response method1 (AutorizationRequest request) throws  SQLException{
+        String login = request.getLogin();
+        String password = request.getPassword();
+        User user = chatDao.findByLogin(login);
+        if (user != null && user.getPassword().equals(password)) {
+            LOGGER.info("Client " + login + " autorizated");
+            return FactoryResponse.getAuthorizedResponse();
+        } else {
+            return FactoryResponse.getNotAutorizedResponse();
+        }
+    }
 
+
+    private static Response method2(RegistrationRequest request) throws SQLException{
+        String login = request.getLogin();
+        String password = request.getPassword();
+        if (chatDao.findByLogin(login) != null) {
+            return FactoryResponse.getNotRegisteredResponse();
+        } else {
+            User user = new User(login, password, new Date());
+            chatDao.insertUser(user);
+            return FactoryResponse.getRegisteredResponse();
+        }
     }
 }

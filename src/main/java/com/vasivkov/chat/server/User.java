@@ -35,6 +35,19 @@ public class User {
         this.dateOfRegistration = dateOfRegistration;
     }
 
+    public User() {
+    }
+
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
+    public User(String login, String password, Date dateOfRegistration) {
+        this.login = login;
+        this.password = password;
+        this.dateOfRegistration = dateOfRegistration;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -4,6 +4,9 @@ import com.vasivkov.chat.common.Message;
 import org.apache.log4j.Logger;
 
 import java.io.ObjectInputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by vasya on 05/07/17.
@@ -31,7 +34,10 @@ public class ThreadForReadingMessages implements Runnable {
                 Message message = (Message) object;
                 String text = message.getText();
                 String login = message.getAuthor();
-                System.out.println("   " + login + " >> " + text);
+                Date now = new Date();
+                DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+                String s = formatter.format(now);
+                System.out.println("   " + login + "( " + s + " )" + " >> " + text);
             }
         }
     }
