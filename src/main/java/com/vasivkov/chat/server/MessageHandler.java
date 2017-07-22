@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class MessageHandler {
     private static final Logger LOGGER = Logger.getLogger(MessageHandler.class.getName());
-    private static ChatDao chatDao = new ChatDao();
+    private static UserDao userDao = new UserDao();
 
     public static Response handlerOfRequest(Request request) {
         try {
@@ -28,7 +28,7 @@ public class MessageHandler {
     private static Response method1(AuthorizationRequest request) throws SQLException {
         String login = request.getLogin();
         String password = request.getPassword();
-        User user = chatDao.findByLogin(login);
+        User user = userDao.findByLogin(login);
         if (user != null && user.getPassword().equals(password)) {
             LOGGER.info("Client " + login + " autorizated");
             return FactoryResponse.getAuthorizedResponse();
@@ -40,11 +40,11 @@ public class MessageHandler {
     private static Response method2(RegistrationRequest request) throws SQLException {
         String login = request.getLogin();
         String password = request.getPassword();
-        if (chatDao.findByLogin(login) != null) {
+        if (userDao.findByLogin(login) != null) {
             return FactoryResponse.getNotRegisteredResponse();
         } else {
             User user = new User(login, password, new Date());
-            chatDao.insertUser(user);
+            userDao.insertUser(user);
             return FactoryResponse.getRegisteredResponse();
         }
     }

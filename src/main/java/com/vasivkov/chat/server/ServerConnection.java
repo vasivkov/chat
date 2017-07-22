@@ -17,7 +17,7 @@ public class ServerConnection implements Runnable {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
-    private  ChatDao chatDao = new ChatDao();
+    private  MessageDao messageDao = new MessageDao();
     public void setLogin(String login) {
         this.login = login;
     }
@@ -47,7 +47,7 @@ public class ServerConnection implements Runnable {
                     Message message = (Message) object;
                     message.setAuthor(login);
                     if (!message.getText().equals("")) {
-                        chatDao.insertMessage(message);
+                        messageDao.insertMessage(message);
                         sendToAllClients(message);
                     }
                 } else if (object instanceof ClosedConnectionRequest) {
@@ -65,7 +65,7 @@ public class ServerConnection implements Runnable {
                     }
                     MessageTransportUtil.sendMessageWithRepeat(response, oos, 5);
                     if(response.isResult()){
-                        List<Message> list = chatDao.getLastTenMessages();
+                        List<Message> list = messageDao.getLastTenMessages();
                         for (Message message : list) {
                             MessageTransportUtil.sendMessageNoGuarantee(message, oos);
                         }
