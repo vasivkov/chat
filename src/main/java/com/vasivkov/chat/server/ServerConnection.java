@@ -58,7 +58,7 @@ public class ServerConnection implements Runnable {
                     isClientExit = true;
                 } else if (object instanceof Request) {
                     Request request = (Request) object;
-                    Response response = MessageHandler.handlerOfRequest(request);
+                    Response response = MessageHandler.handle(request);
                     if (response.isResult()) {
                         login = request.getLogin();
                         Server.mapOfClient.put(login, this);

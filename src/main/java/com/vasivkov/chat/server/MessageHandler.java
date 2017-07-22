@@ -10,13 +10,13 @@ public class MessageHandler {
     private static final Logger LOGGER = Logger.getLogger(MessageHandler.class.getName());
     private static UserDao userDao = new UserDao();
 
-    public static Response handlerOfRequest(Request request) {
+    public static Response handle(Request request) {
         try {
             if (request instanceof AuthorizationRequest) {
-                return method1((AuthorizationRequest) request);
+                return handleAutorizationRequest((AuthorizationRequest) request);
             }
             if (request instanceof RegistrationRequest) {
-                return method2((RegistrationRequest) request);
+                return handleRegistrationRequest((RegistrationRequest) request);
             }
         } catch (SQLException e) {
             LOGGER.error("Failed to handle request " + request, e);
@@ -25,7 +25,7 @@ public class MessageHandler {
         throw new IllegalArgumentException("Received message of unknown type " + request);
     }
 
-    private static Response method1(AuthorizationRequest request) throws SQLException {
+    private static Response handleAutorizationRequest(AuthorizationRequest request) throws SQLException {
         String login = request.getLogin();
         String password = request.getPassword();
         User user = userDao.findByLogin(login);
@@ -37,7 +37,7 @@ public class MessageHandler {
         }
     }
 
-    private static Response method2(RegistrationRequest request) throws SQLException {
+    private static Response handleRegistrationRequest(RegistrationRequest request) throws SQLException {
         String login = request.getLogin();
         String password = request.getPassword();
         if (userDao.findByLogin(login) != null) {

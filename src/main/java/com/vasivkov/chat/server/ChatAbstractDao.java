@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ChatAbstractDao {
-    private static final Logger LOGGER = Logger.getLogger(ChatDao.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ChatAbstractDao.class.getName());
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private static final String URL = "jdbc:mysql://localhost:3306/chatUsers";
     private static final String USER = "root";
