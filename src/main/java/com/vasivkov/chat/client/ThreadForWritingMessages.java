@@ -24,14 +24,13 @@ public class ThreadForWritingMessages implements Runnable {
     public void run() {
         System.out.println("Please, write your message");
         while (true) {
-            String text = null;
             try {
-                text = br.readLine();
-                if (text.equalsIgnoreCase("E")) {
+                String text = br.readLine();
+                ClientCommands command = ClientCommands.of(text);
+                if (command == ClientCommands.QUIT) {
                     MessageTransportUtil.sendMessageNoGuarantee(new ClosedConnectionRequest(), oos);
                     return;
                 }
-
                 Message message = new Message(text, new Date());
                 if (!"".equals(text)) {
                     MessageTransportUtil.sendMessageNoGuarantee(message, oos);

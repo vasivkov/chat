@@ -38,15 +38,23 @@ public class ClientConnection {
             }
 
             Request rq = null;
-            if (choice.equalsIgnoreCase("E")) {
-                rq = ConsoleUtil.dataForCloseingConnection();
+            ClientCommands command = ClientCommands.of(choice);
+            switch (command) {
+                case AUTHORIZATION:
+                    rq = ConsoleUtil.dataForAuthorization(br);
+                    break;
+                case REGISTRATION:
+                    rq = ConsoleUtil.dataForRegistration(br);
+                    break;
+                case QUIT:
+                    rq = ConsoleUtil.dataForCloseingConnection();
+                    break;
+                default:
+                    System.out.println("invalid command " + choice);
+                    continue;
             }
-            if (choice.equalsIgnoreCase("R")) {
-                rq = ConsoleUtil.dataForRegistration(br);
-            }
-            if (choice.equalsIgnoreCase("A")) {
-                rq = ConsoleUtil.dataForAuthorization(br);
-            }
+
+
             try {
                 MessageTransportUtil.sendMessageWithRepeat(rq, oos, 5);
                 if (rq instanceof ClosedConnectionRequest) {

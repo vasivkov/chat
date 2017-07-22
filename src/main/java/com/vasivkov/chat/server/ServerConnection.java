@@ -42,7 +42,7 @@ public class ServerConnection implements Runnable {
         try {
             while (!isClientExit) {
                 Object object = ois.readObject();
-                LOGGER.info("Recieved message " + object);
+                LOGGER.info("Received message " + object);
                 if (object instanceof Message) {
                     Message message = (Message) object;
                     message.setAuthor(login);
