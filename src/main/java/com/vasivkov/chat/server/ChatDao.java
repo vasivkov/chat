@@ -18,8 +18,9 @@ public class ChatDao {
     private static final String PASSWORD = "";
     private static final String FIND_BY_LOGIN = "SELECT login, password FROM users WHERE login=?";
     private static final String INSERT_USER = "INSERT INTO users (login, password, date_of_registration) VALUES(?, ?, ?)";
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static final SimpleDateFormat sdfShort = new SimpleDateFormat("HH:mm:ss");
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final String INSERT_MESSAGE = "INSERT INTO messages (text, message_datetime, author) VALUES (?, ?, ?)";
+    private static final String GET_MESSAGE = "SELECT text, message_datetime, author FROM messages ORDER BY message_datetime DESC LIMIT 10";
 
     private Connection getConnection() {
         LOGGER.info("Try to connect to MySQL DB");
@@ -71,7 +72,7 @@ public class ChatDao {
             preparedStatement = connection.prepareStatement(INSERT_USER);
             preparedStatement.setString(1, user.getLogin());
             preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setString(3, sdf.format(user.getDateOfRegistration()));
+            preparedStatement.setString(3, SDF.format(user.getDateOfRegistration()));
             preparedStatement.executeUpdate();
 
         } finally {
@@ -87,7 +88,7 @@ public class ChatDao {
         PreparedStatement preparedStatement = null;
         try {
             connection = getConnection();
-            preparedStatement = connection.prepareStatement("INSERT INTO messages (text, message_datetime, author) VALUES (?, ?, ?)");
+            preparedStatement = connection.prepareStatement(INSERT_MESSAGE);
             preparedStatement.setString(1, message.getText());
             preparedStatement.setTimestamp(2, timestamp);
             preparedStatement.setString(3, message.getAuthor());
@@ -106,17 +107,15 @@ public class ChatDao {
         List<Message> messageList = new ArrayList<>();
         try {
             connection = getConnection();
-            preparedStatement = connection.prepareStatement("SELECT text, message_datetime, author FROM messages ORDER BY message_datetime DESC LIMIT 10");
+            preparedStatement = connection.prepareStatement(GET_MESSAGE);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Timestamp timestamp =resultSet.getTimestamp("message_datetime");
                 Message message = new Message(resultSet.getString("text"),
                         resultSet.getString("author"),
-                        timestamp);
+                        resultSet.getTimestamp("message_datetime"));
                 messageList.add(message);
             }
             Collections.reverse(messageList);
-
         } finally {
             close(connection);
             close(preparedStatement);
