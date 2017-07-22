@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Date;
 
 public class ThreadForWritingMessages implements Runnable {
     public static final Logger LOGGER = Logger.getLogger(ThreadForWritingMessages.class.getName());
@@ -30,7 +31,8 @@ public class ThreadForWritingMessages implements Runnable {
                     MessageTransportUtil.sendMessageNoGuarantee(new ClosedConnectionRequest(), oos);
                     return;
                 }
-                Message message = new Message(text);
+
+                Message message = new Message(text, new Date());
                 if (!"".equals(text)) {
                     MessageTransportUtil.sendMessageNoGuarantee(message, oos);
                 }

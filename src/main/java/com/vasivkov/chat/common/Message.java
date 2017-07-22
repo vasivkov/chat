@@ -1,14 +1,31 @@
 package com.vasivkov.chat.common;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Message implements Serializable {
     private String text;
     private String author;
+    private Date date;
 
-    public Message(String text, String author) {
+
+    public Message(String text, String author, Date date) {
         this.text = text;
         this.author = author;
+        this.date = date;
+    }
+
+    public Message(String text, Date date) {
+        this.text = text;
+        this.date = date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     public Message(String text) {

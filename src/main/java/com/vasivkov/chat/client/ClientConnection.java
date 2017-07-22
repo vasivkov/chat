@@ -59,6 +59,7 @@ public class ClientConnection {
                     Response response = (Response) object;
                     if (response.isResult()) {
                         System.out.println(response.getResponseMessage());
+
                         Thread writingThread = new Thread(new ThreadForWritingMessages(oos, br));
                         Thread readingThread = new Thread(new ThreadForReadingMessages(ois));
                         writingThread.start();

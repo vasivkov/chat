@@ -30,10 +30,10 @@ public class ThreadForReadingMessages implements Runnable {
                 Message message = (Message) object;
                 String text = message.getText();
                 String login = message.getAuthor();
-                Date now = new Date();
+                Date now = message.getDate();
                 DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
                 String s = formatter.format(now);
-                System.out.println("   " + login + "(" + s + ")" + " >> " + text);
+               System.out.println("   " + login + "(" + s + ")" + " >> " + text);
             }
         }
     }

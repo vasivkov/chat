@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class ServerConnection implements Runnable {
@@ -15,7 +17,7 @@ public class ServerConnection implements Runnable {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
-
+    private  ChatDao chatDao = new ChatDao();
     public void setLogin(String login) {
         this.login = login;
     }
@@ -45,10 +47,11 @@ public class ServerConnection implements Runnable {
                     Message message = (Message) object;
                     message.setAuthor(login);
                     if (!message.getText().equals("")) {
+                        chatDao.insertMessage(message);
                         sendToAllClients(message);
                     }
                 } else if (object instanceof ClosedConnectionRequest) {
-                    Message message = new Message(login + " LEFT THE CHAT", "  ");
+                    Message message = new Message(login + " LEFT THE CHAT", "  ", new Date());
                     sendToAllClients(message);
                     Server.mapOfClient.remove(login);
                     System.out.println(Server.mapOfClient);
@@ -61,6 +64,12 @@ public class ServerConnection implements Runnable {
                         Server.mapOfClient.put(login, this);
                     }
                     MessageTransportUtil.sendMessageWithRepeat(response, oos, 5);
+                    if(response.isResult()){
+                        List<Message> list = chatDao.getLastTenMessages();
+                        for (Message message : list) {
+                            MessageTransportUtil.sendMessageNoGuarantee(message, oos);
+                        }
+                    }
                 }
             }
 

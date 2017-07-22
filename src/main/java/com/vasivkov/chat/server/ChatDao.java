@@ -1,9 +1,14 @@
 package com.vasivkov.chat.server;
 
+import com.vasivkov.chat.common.Message;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class ChatDao {
     private static final Logger LOGGER = Logger.getLogger(ChatDao.class.getName());
@@ -14,6 +19,7 @@ public class ChatDao {
     private static final String FIND_BY_LOGIN = "SELECT login, password FROM users WHERE login=?";
     private static final String INSERT_USER = "INSERT INTO users (login, password, date_of_registration) VALUES(?, ?, ?)";
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat sdfShort = new SimpleDateFormat("HH:mm:ss");
 
     private Connection getConnection() {
         LOGGER.info("Try to connect to MySQL DB");
@@ -65,13 +71,57 @@ public class ChatDao {
             preparedStatement = connection.prepareStatement(INSERT_USER);
             preparedStatement.setString(1, user.getLogin());
             preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setString(3, sdf.format(user.getDateOfRegistration())); // TODO
+            preparedStatement.setString(3, sdf.format(user.getDateOfRegistration()));
             preparedStatement.executeUpdate();
 
         } finally {
             close(connection);
             close(preparedStatement);
         }
+    }
+
+    void insertMessage(Message message) throws SQLException {
+        Date date = message.getDate();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = getConnection();
+            preparedStatement = connection.prepareStatement("INSERT INTO messages (text, message_datetime, author) VALUES (?, ?, ?)");
+            preparedStatement.setString(1, message.getText());
+            preparedStatement.setTimestamp(2, timestamp);
+            preparedStatement.setString(3, message.getAuthor());
+            preparedStatement.executeUpdate();
+        } finally {
+            close(connection);
+            close(preparedStatement);
+        }
+    }
+
+
+
+    List<Message> getLastTenMessages() throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        List<Message> messageList = new ArrayList<>();
+        try {
+            connection = getConnection();
+            preparedStatement = connection.prepareStatement("SELECT text, message_datetime, author FROM messages ORDER BY message_datetime DESC LIMIT 10");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Timestamp timestamp =resultSet.getTimestamp("message_datetime");
+                Message message = new Message(resultSet.getString("text"),
+                        resultSet.getString("author"),
+                        timestamp);
+                messageList.add(message);
+            }
+            Collections.reverse(messageList);
+
+        } finally {
+            close(connection);
+            close(preparedStatement);
+        }
+        return messageList;
     }
 
     private void close(Connection connection) {
