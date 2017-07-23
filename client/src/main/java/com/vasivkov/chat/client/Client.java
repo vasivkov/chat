@@ -5,7 +5,11 @@ import java.net.Socket;
 public class Client {
 
     public static void main(String[] args) throws IOException {
-        Socket socket = new Socket("localhost", 2025);
+        if (args.length != 2){
+            System.out.println("Wrong input arguments!");
+            System.exit(-1);
+        }
+        Socket socket = new Socket(args[0], Integer.parseInt(args[1]));
         ClientConnection clientConnection = new ClientConnection(socket);
         clientConnection.connect();
     }

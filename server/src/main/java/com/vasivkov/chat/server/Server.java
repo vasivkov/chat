@@ -14,10 +14,13 @@ public class Server {
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     public static void main(String[] args) throws IOException {
+        if (args.length != 1){
+            System.out.println("Wrong input argument!");
+            System.exit(-1);
+        }
         Server server = new Server();
         mapOfClient = new HashMap<>();
-
-        ServerSocket serverSocket = new ServerSocket(2025);
+        ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
         LOGGER.info("Server started");
         server.waitConnection(serverSocket);
     }
