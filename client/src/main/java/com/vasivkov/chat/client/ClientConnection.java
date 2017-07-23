@@ -38,7 +38,7 @@ public class ClientConnection {
             }
 
             Request rq = null;
-            ClientCommands command = ClientCommands.of(choice);
+            ClientCommands command = ClientCommands.of(choice.toUpperCase());
             switch (command) {
                 case AUTHORIZATION:
                     rq = ConsoleUtil.dataForAuthorization(br);
@@ -53,7 +53,6 @@ public class ClientConnection {
                     System.out.println("invalid command " + choice);
                     continue;
             }
-
 
             try {
                 MessageTransportUtil.sendMessageWithRepeat(rq, oos, 5);

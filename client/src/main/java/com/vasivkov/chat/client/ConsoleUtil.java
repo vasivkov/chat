@@ -3,7 +3,6 @@ package com.vasivkov.chat.client;
 import com.vasivkov.chat.common.AuthorizationRequest;
 import com.vasivkov.chat.common.ClosedConnectionRequest;
 import com.vasivkov.chat.common.RegistrationRequest;
-import com.vasivkov.chat.server.EncryptionUtil;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
