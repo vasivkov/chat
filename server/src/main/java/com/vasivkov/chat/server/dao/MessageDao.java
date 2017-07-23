@@ -1,4 +1,4 @@
-package com.vasivkov.chat.server;
+package com.vasivkov.chat.server.dao;
 
 import com.vasivkov.chat.common.Message;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class MessageDao extends ChatAbstractDao {
     private static final String INSERT_MESSAGE = "INSERT INTO messages (text, message_datetime, author) VALUES (?, ?, ?)";
     private static final String GET_MESSAGE = "SELECT text, message_datetime, author FROM messages ORDER BY message_datetime DESC LIMIT 10";
-    void insertMessage(Message message) throws SQLException {
+    public void insertMessage(Message message) throws SQLException {
         Date date = message.getDate();
         Timestamp timestamp = new Timestamp(date.getTime());
         Connection connection = null;
@@ -29,7 +29,7 @@ public class MessageDao extends ChatAbstractDao {
         }
     }
 
-    List<Message> getLastTenMessages() throws SQLException {
+    public List<Message> getLastTenMessages() throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Message> messageList = new ArrayList<>();

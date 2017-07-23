@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Server {
-    static Map<String, ServerConnection> mapOfClient;
+    static Map<String, ServerConnection> connectedClient;
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     public static void main(String[] args) throws IOException {
@@ -19,7 +19,7 @@ public class Server {
             System.exit(-1);
         }
         Server server = new Server();
-        mapOfClient = new HashMap<>();
+        connectedClient = new HashMap<>();
         ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
         LOGGER.info("Server started");
         server.waitConnection(serverSocket);

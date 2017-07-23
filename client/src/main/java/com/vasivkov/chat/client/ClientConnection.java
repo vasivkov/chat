@@ -1,6 +1,10 @@
 package com.vasivkov.chat.client;
 
-import com.vasivkov.chat.common.*;
+import com.vasivkov.chat.client.util.ConsoleUtil;
+import com.vasivkov.chat.common.ClosedConnectionRequest;
+import com.vasivkov.chat.common.MessageTransportUtil;
+import com.vasivkov.chat.common.Request;
+import com.vasivkov.chat.common.Response;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -67,8 +71,8 @@ public class ClientConnection {
                     if (response.isResult()) {
                         System.out.println(response.getResponseMessage());
 
-                        Thread writingThread = new Thread(new ThreadForWritingMessages(oos, br));
-                        Thread readingThread = new Thread(new ThreadForReadingMessages(ois));
+                        Thread writingThread = new Thread(new ClientToServerMessageProcessor(oos, br));
+                        Thread readingThread = new Thread(new ServerToClientMessageProcessor(ois));
                         writingThread.start();
                         readingThread.start();
                         finished = true;

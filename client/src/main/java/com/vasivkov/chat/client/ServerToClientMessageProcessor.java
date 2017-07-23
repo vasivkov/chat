@@ -8,11 +8,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ThreadForReadingMessages implements Runnable {
+public class ServerToClientMessageProcessor implements Runnable {
     private ObjectInputStream ois;
-    private static final Logger LOGGER = Logger.getLogger(ThreadForReadingMessages.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ServerToClientMessageProcessor.class.getName());
+    private  static  final String FORMAT = "HH:mm:ss";
 
-    public ThreadForReadingMessages(ObjectInputStream ois) {
+    public ServerToClientMessageProcessor(ObjectInputStream ois) {
         this.ois = ois;
     }
 
@@ -31,7 +32,7 @@ public class ThreadForReadingMessages implements Runnable {
                 String text = message.getText();
                 String login = message.getAuthor();
                 Date now = message.getDate();
-                DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+                DateFormat formatter = new SimpleDateFormat(FORMAT);
                 String s = formatter.format(now);
                System.out.println("   " + login + "(" + s + ")" + " >> " + text);
             }

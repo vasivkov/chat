@@ -1,4 +1,4 @@
-package com.vasivkov.chat.server;
+package com.vasivkov.chat.server.dao;
 
 import org.apache.log4j.Logger;
 

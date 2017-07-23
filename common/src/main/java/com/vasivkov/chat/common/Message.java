@@ -20,16 +20,8 @@ public class Message implements Serializable {
         this.date = date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public Date getDate() {
         return date;
-    }
-
-    public Message(String text) {
-        this.text = text;
     }
 
     public String getAuthor() {

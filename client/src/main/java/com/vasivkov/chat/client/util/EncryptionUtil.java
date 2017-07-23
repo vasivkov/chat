@@ -1,4 +1,4 @@
-package com.vasivkov.chat.client;
+package com.vasivkov.chat.client.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

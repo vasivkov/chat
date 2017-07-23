@@ -1,6 +1,7 @@
 package com.vasivkov.chat.server;
 
 import com.vasivkov.chat.common.*;
+import com.vasivkov.chat.server.dao.MessageDao;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
@@ -53,15 +54,14 @@ public class ServerConnection implements Runnable {
                 } else if (object instanceof ClosedConnectionRequest) {
                     Message message = new Message(login + " LEFT THE CHAT", "  ", new Date());
                     sendToAllClients(message);
-                    Server.mapOfClient.remove(login);
-                    System.out.println(Server.mapOfClient);
+                    Server.connectedClient.remove(login);
                     isClientExit = true;
                 } else if (object instanceof Request) {
                     Request request = (Request) object;
                     Response response = MessageHandler.handle(request);
                     if (response.isResult()) {
                         login = request.getLogin();
-                        Server.mapOfClient.put(login, this);
+                        Server.connectedClient.put(login, this);
                     }
                     MessageTransportUtil.sendMessageWithRepeat(response, oos, 5);
                     if(response.isResult()){
@@ -84,7 +84,7 @@ public class ServerConnection implements Runnable {
     }
 
     private void sendToAllClients(Object o) {
-        for (Map.Entry<String, ServerConnection> entry : Server.mapOfClient.entrySet()) {
+        for (Map.Entry<String, ServerConnection> entry : Server.connectedClient.entrySet()) {
             if (!login.equals(entry.getKey())) {
                 MessageTransportUtil.sendMessageNoGuarantee(o, entry.getValue().getOos());
             }

@@ -1,6 +1,7 @@
 package com.vasivkov.chat.server;
 
 import com.vasivkov.chat.common.*;
+import com.vasivkov.chat.server.dao.UserDao;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;

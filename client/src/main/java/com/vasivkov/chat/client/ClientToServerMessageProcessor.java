@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 
-public class ThreadForWritingMessages implements Runnable {
-    public static final Logger LOGGER = Logger.getLogger(ThreadForWritingMessages.class.getName());
+public class ClientToServerMessageProcessor implements Runnable {
+    public static final Logger LOGGER = Logger.getLogger(ClientToServerMessageProcessor.class.getName());
     private ObjectOutputStream oos;
     private BufferedReader br;
 
-    public ThreadForWritingMessages(ObjectOutputStream oos, BufferedReader br) {
+    public ClientToServerMessageProcessor(ObjectOutputStream oos, BufferedReader br) {
         this.oos = oos;
         this.br = br;
     }

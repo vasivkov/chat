@@ -1,4 +1,6 @@
-package com.vasivkov.chat.server;
+package com.vasivkov.chat.server.dao;
+
+import com.vasivkov.chat.server.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +13,7 @@ public class UserDao extends ChatAbstractDao {
     private static final String INSERT_USER = "INSERT INTO users (login, password, date_of_registration) VALUES(?, ?, ?)";
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    User findByLogin(String login) throws SQLException {
+    public User findByLogin(String login) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -33,7 +35,7 @@ public class UserDao extends ChatAbstractDao {
         }
     }
 
-    void insertUser(User user) throws SQLException {
+    public void insertUser(User user) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
