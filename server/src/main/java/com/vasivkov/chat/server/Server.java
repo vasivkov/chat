@@ -8,9 +8,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
-    static Map<String, ServerConnection> connectedClients = new HashMap<>();
+    static Map<String, ServerConnection> connectedClients = new ConcurrentHashMap<>();
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     public static void main(String[] args) throws IOException {
