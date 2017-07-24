@@ -23,6 +23,10 @@ public class FactoryResponse {
     static Response getNotRegisteredResponse() {
         return new Response(false, "Such login already exist");
     }
+
+    static Response getDoubleRegisteredResponse(){
+        return  new Response(false, "Such user is already in the chat");
+    }
 }
 
 

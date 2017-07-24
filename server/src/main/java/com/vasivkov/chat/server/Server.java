@@ -10,31 +10,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Server {
-    static Map<String, ServerConnection> connectedClient;
+    static Map<String, ServerConnection> connectedClients = new HashMap<>();
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 1){
+        if (args.length != 1) {
             System.out.println("Wrong input argument!");
             System.exit(-1);
         }
-        Server server = new Server();
-        connectedClient = new HashMap<>();
         ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
         LOGGER.info("Server started");
-        server.waitConnection(serverSocket);
+        Server.waitConnection(serverSocket);
     }
 
-    private void waitConnection(ServerSocket serverSocket) {
+    private static void waitConnection(ServerSocket serverSocket) {
+        Socket socket = null;
         try {
             while (true) {
-                Socket socket = serverSocket.accept();
+                socket = serverSocket.accept();
                 LOGGER.info("The client " + socket + " joined");
                 Thread thread = new Thread(new ServerConnection(socket));
                 thread.start();
             }
         } catch (IOException e) {
             LOGGER.error("Failed to connect client", e);
+        } finally {
+            if(socket!= null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

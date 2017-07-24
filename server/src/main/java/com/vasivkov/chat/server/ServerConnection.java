@@ -18,7 +18,8 @@ public class ServerConnection implements Runnable {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
-    private  MessageDao messageDao = new MessageDao();
+    private MessageDao messageDao = new MessageDao();
+
     public void setLogin(String login) {
         this.login = login;
     }
@@ -47,24 +48,22 @@ public class ServerConnection implements Runnable {
                 if (object instanceof Message) {
                     Message message = (Message) object;
                     message.setAuthor(login);
-                    if (!message.getText().equals("")) {
-                        messageDao.insertMessage(message);
-                        sendToAllClients(message);
-                    }
+                    messageDao.insertMessage(message);
+                    sendToAllClients(message);
                 } else if (object instanceof ClosedConnectionRequest) {
                     Message message = new Message(login + " LEFT THE CHAT", "  ", new Date());
                     sendToAllClients(message);
-                    Server.connectedClient.remove(login);
+                    Server.connectedClients.remove(login);
                     isClientExit = true;
                 } else if (object instanceof Request) {
                     Request request = (Request) object;
                     Response response = MessageHandler.handle(request);
                     if (response.isResult()) {
                         login = request.getLogin();
-                        Server.connectedClient.put(login, this);
+                        Server.connectedClients.put(login, this);
                     }
                     MessageTransportUtil.sendMessageWithRepeat(response, oos, 5);
-                    if(response.isResult()){
+                    if (response.isResult()) {
                         List<Message> list = messageDao.getLastTenMessages();
                         for (Message message : list) {
                             MessageTransportUtil.sendMessageNoGuarantee(message, oos);
@@ -84,7 +83,7 @@ public class ServerConnection implements Runnable {
     }
 
     private void sendToAllClients(Object o) {
-        for (Map.Entry<String, ServerConnection> entry : Server.connectedClient.entrySet()) {
+        for (Map.Entry<String, ServerConnection> entry : Server.connectedClients.entrySet()) {
             if (!login.equals(entry.getKey())) {
                 MessageTransportUtil.sendMessageNoGuarantee(o, entry.getValue().getOos());
             }

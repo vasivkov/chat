@@ -23,13 +23,14 @@ public class ClientToServerMessageProcessor implements Runnable {
     @Override
     public void run() {
         System.out.println("Please, write your message");
-        while (true) {
+        boolean isFinished = false;
+        while (!isFinished) {
             try {
                 String text = br.readLine();
                 ClientCommands command = ClientCommands.of(text);
                 if (command == ClientCommands.QUIT) {
                     MessageTransportUtil.sendMessageNoGuarantee(new ClosedConnectionRequest(), oos);
-                    return;
+                    isFinished = true;
                 }
                 Message message = new Message(text, new Date());
                 if (!"".equals(text)) {

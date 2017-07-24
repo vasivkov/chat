@@ -30,6 +30,9 @@ public class MessageHandler {
         String login = request.getLogin();
         String password = request.getPassword();
         User user = userDao.findByLogin(login);
+        if(Server.connectedClients.containsKey(login)){
+            return FactoryResponse.getDoubleRegisteredResponse();
+        }
         if (user != null && user.getPassword().equals(password)) {
             LOGGER.info("Client " + login + " autorizated");
             return FactoryResponse.getAuthorizedResponse();
