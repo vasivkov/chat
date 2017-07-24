@@ -1,4 +1,5 @@
-.idea/*
-target/*
+.idea/
+target/
 *.iml
-out/*
+logs/
+*.DS_Store
