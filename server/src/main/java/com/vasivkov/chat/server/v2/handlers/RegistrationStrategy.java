@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class
-RegistrationStrategy implements Strategy<RegistrationRequest> {
+public class RegistrationStrategy implements Strategy<RegistrationRequest> {
     private static final Logger LOGGER = Logger.getLogger(MessageHandler.class.getName());
     private  UserDao userDao = new UserDao();
 

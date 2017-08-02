@@ -1,6 +1,6 @@
 package com.vasivkov.chat.server.v2.vo;
 
-public class RegistrationRequest implements Request {
+public class RegistrationRequest extends Request {
     private String login;
     private String password;
     private int ID;

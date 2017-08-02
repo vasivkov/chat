@@ -23,7 +23,6 @@ public class ServerConnectionV2 implements Runnable {
         this.id = id;
         this.isAuthorized = false;
 
-
         try {
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());

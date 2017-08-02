@@ -3,7 +3,7 @@ package com.vasivkov.chat.server.v2.vo;
 /**
  * Created by eugene on 7/28/17.
  */
-public class ClientLeftRequest implements Request {
+public class ClientLeftRequest extends Request {
     private String clientLogin;
 
     public ClientLeftRequest(String clientLogin) {

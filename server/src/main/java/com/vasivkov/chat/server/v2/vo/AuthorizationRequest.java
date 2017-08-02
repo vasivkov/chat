@@ -1,6 +1,6 @@
 package com.vasivkov.chat.server.v2.vo;
 
-public class AuthorizationRequest implements Request {
+public class AuthorizationRequest extends Request {
 
     private String login;
     private String password;
