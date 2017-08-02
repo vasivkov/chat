@@ -3,6 +3,7 @@ package com.vasivkov.chat.server.v2.handlers;
 import com.vasivkov.chat.server.v2.vo.Request;
 import com.vasivkov.chat.server.v2.vo.ResponseWithRecipients;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 public class MessageProcessor implements Runnable {
@@ -20,8 +21,10 @@ public class MessageProcessor implements Runnable {
         while(true) {
             Request next = requests.poll();
             Strategy s = StrategyFactory.getStrategy(next);
-            ResponseWithRecipients response = s.process(next);
-            responses.add(response);
+            List<ResponseWithRecipients> listOfResponses = s.process(next);
+            for(ResponseWithRecipients response: listOfResponses){
+                responses.add(response);
+            }
         }
     }
 

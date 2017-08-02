@@ -16,6 +16,9 @@ public class Message implements Serializable {
         this.text = text;
         this.creationDateTime = creationDateTime;
     }
+    public Message(String text){
+        this.text = text;
+    }
 
     public String getAuthor() {
         return author;
