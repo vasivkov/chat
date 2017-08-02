@@ -11,8 +11,8 @@ import java.util.List;
 public class MessageDao extends ChatAbstractDao {
     private static final String INSERT_MESSAGE = "INSERT INTO messages (text, message_datetime, author) VALUES (?, ?, ?)";
     private static final String GET_MESSAGE = "SELECT text, message_datetime, author FROM messages ORDER BY message_datetime DESC LIMIT 10";
-    public void insertMessage(Message message) throws SQLException {
-        Date date = message.getDate();
+    public void insertMessage(com.vasivkov.chat.server.v2.vo.Message message) throws SQLException {
+        Date date = message.getCreationDateTime();
         Timestamp timestamp = new Timestamp(date.getTime());
         Connection connection = null;
         PreparedStatement preparedStatement = null;
