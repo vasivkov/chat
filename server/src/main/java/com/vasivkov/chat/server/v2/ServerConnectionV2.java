@@ -12,19 +12,16 @@ import java.util.concurrent.BlockingQueue;
 public class ServerConnectionV2 implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(ServerConnectionV2.class.getName());
-    private Socket socket;
-    private int ID;
-    private boolean isConnected = false;
+    private int id;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private BlockingQueue<Request> requests;
-    private boolean isActive;
+    private boolean isAuthorized;
 
-    public ServerConnectionV2(Socket socket, BlockingQueue<Request> requests, int ID) {
-        this.socket = socket;
+    public ServerConnectionV2(Socket socket, BlockingQueue<Request> requests, int id) {
         this.requests = requests;
-        this.ID = ID;
-        this.isActive = true;
+        this.id = id;
+        this.isAuthorized = false;
 
 
         try {
@@ -35,54 +32,31 @@ public class ServerConnectionV2 implements Runnable {
         }
     }
 
-
     @Override
     public void run() {
-        //TODO read from socket, check that instance of Request, add to requests queue
         try {
-            while (!isActive) {
+            while (!isAuthorized) {
                 Object object = ois.readObject();
                 Request request = (Request) object;
-                request.setID(ID);
-
+                request.setID(id);
+                requests.add(request);
 
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to read data from client");
         }
     }
-
-
-    private ObjectInputStream getInputStream(Socket socket) {
-        try {
-            return new ObjectInputStream(socket.getInputStream());
-        } catch (IOException e) {
-            LOGGER.fatal("Failed to create i/o streams", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Object readNextObject(ObjectInputStream ois) {
-        Object obj = null;
-        try {
-            obj = ois.readObject();
-        } catch (Exception e) {
-            LOGGER.error("Failed to read object");
-        }
-        return obj;
-    }
-
 
     public ObjectOutputStream getOos() {
         return oos;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setAuthorized(boolean authorized) {
+        isAuthorized = authorized;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public boolean isAuthorized() {
+        return isAuthorized;
     }
 }
 

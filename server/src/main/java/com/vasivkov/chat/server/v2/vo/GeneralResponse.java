@@ -5,22 +5,20 @@ package com.vasivkov.chat.server.v2.vo;
  */
 public class GeneralResponse implements Response {
 
-    private Result result;
     private String error;
-    boolean outcome;
+    private boolean outcome;
 
-    public GeneralResponse(Boolean outcome, String error) {
-//        this.result = result;
-        this.outcome = outcome;
+    public GeneralResponse(boolean outcome,String error) {
         this.error = error;
+        this.outcome = outcome;
     }
 
-    public Result getResult() {
-        return result;
-    }
-
-    public String getError() {
-        return error;
+    @Override
+    public String toString() {
+        return "GeneralResponse{" +
+                "error='" + error + '\'' +
+                ", outcome=" + outcome +
+                '}';
     }
 
     @Override
@@ -30,27 +28,15 @@ public class GeneralResponse implements Response {
 
         GeneralResponse that = (GeneralResponse) o;
 
-        if (result != that.result) return false;
+        if (outcome != that.outcome) return false;
         return error != null ? error.equals(that.error) : that.error == null;
     }
 
     @Override
     public int hashCode() {
-        int result1 = result != null ? result.hashCode() : 0;
-        result1 = 31 * result1 + (error != null ? error.hashCode() : 0);
-        return result1;
-    }
-
-    @Override
-    public String toString() {
-        return "GeneralResponse{" +
-                "result=" + result +
-                ", error='" + error + '\'' +
-                '}';
+        int result = error != null ? error.hashCode() : 0;
+        result = 31 * result + (outcome ? 1 : 0);
+        return result;
     }
 }
 
- enum Result{
-    OK,
-    FAILED
-}

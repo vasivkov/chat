@@ -9,7 +9,9 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -44,7 +46,6 @@ public class ServerV2 {
             System.exit(-1);
         }
         Integer.parseInt(args[0]);
-
     }
 
     private static void closeSocketQuitely(Socket socket) {
@@ -59,13 +60,13 @@ public class ServerV2 {
 
     private static void waitConnection(ServerSocket serverSocket) {
         Socket socket = null;
-        int ID = 0;
+        int id = 0;
         try {
             while (true) {
                 socket = serverSocket.accept();
-                ServerConnectionV2 serverConnectionV2 = new ServerConnectionV2(socket, requests, ID);
-                connectedClients.put(ID, serverConnectionV2 );
-                ID ++;
+                ServerConnectionV2 serverConnectionV2 = new ServerConnectionV2(socket, requests, id);
+                connectedClients.put(id, serverConnectionV2);
+                id++;
                 new Thread(serverConnectionV2).start();
             }
         } catch (IOException e) {
@@ -73,6 +74,16 @@ public class ServerV2 {
         } finally {
             closeSocketQuitely(socket);
         }
+    }
+
+    public static List<Integer> getAuthorizedClients(int id){
+        List<Integer> resipients = new ArrayList<>();
+        for (Map.Entry<Integer, ServerConnectionV2> pair : connectedClients.entrySet()) {
+            if (pair.getKey() != id && pair.getValue().isAuthorized()) {
+                resipients.add(pair.getKey());
+            }
+        }
+        return  resipients;
     }
 
 
