@@ -1,9 +1,9 @@
-package com.vasivkov.chat.server.v2.vo;
+package com.vasivkov.chat.common;
 
-public class MessageRequest extends Request {
+public class MessageResponse implements Response {
     private Message message;
 
-    public MessageRequest(Message message) {
+    public MessageResponse(Message message) {
         this.message = message;
     }
 
@@ -16,7 +16,7 @@ public class MessageRequest extends Request {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MessageRequest that = (MessageRequest) o;
+        MessageResponse that = (MessageResponse) o;
 
         return message != null ? message.equals(that.message) : that.message == null;
     }
@@ -28,14 +28,8 @@ public class MessageRequest extends Request {
 
     @Override
     public String toString() {
-        return "MessageRequest{" +
+        return "MessageResponse{" +
                 "message=" + message +
                 '}';
-    }
-
-
-    @Override
-    public String getSender() {
-        return message.getAuthor();
     }
 }

@@ -1,7 +1,6 @@
 package com.vasivkov.chat.server.v2;
 
 import com.vasivkov.chat.common.MessageTransportUtil;
-import com.vasivkov.chat.server.v2.vo.Response;
 import com.vasivkov.chat.server.v2.vo.ResponseWithRecipients;
 
 import java.util.Map;

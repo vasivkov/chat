@@ -1,5 +1,7 @@
 package com.vasivkov.chat.server.v2.vo;
 
+import com.vasivkov.chat.common.Response;
+
 import java.util.Collections;
 import java.util.List;
 

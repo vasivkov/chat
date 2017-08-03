@@ -1,6 +1,6 @@
-package com.vasivkov.chat.server.v2.vo;
+package com.vasivkov.chat.common;
 
-public class ClientJoinedRequest implements Request {
+public class ClientJoinedRequest extends Request {
 
     private String clientLogin;
 

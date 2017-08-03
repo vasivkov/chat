@@ -1,8 +1,7 @@
 package com.vasivkov.chat.server.v2;
 
-import com.vasivkov.chat.server.Server;
 import com.vasivkov.chat.server.v2.handlers.MessageProcessor;
-import com.vasivkov.chat.server.v2.vo.Request;
+import com.vasivkov.chat.common.Request;
 import com.vasivkov.chat.server.v2.vo.ResponseWithRecipients;
 import org.apache.log4j.Logger;
 
@@ -18,7 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ServerV2 {
 
-    private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ServerV2.class.getName());
     private static final BlockingQueue<Request> requests = new LinkedBlockingQueue<>();
     private static final BlockingQueue<ResponseWithRecipients> responses = new LinkedBlockingQueue<>();
     private static final Map<Integer, ServerConnectionV2> connectedClients = new HashMap<>();
@@ -85,6 +84,4 @@ public class ServerV2 {
         }
         return  resipients;
     }
-
-
 }

@@ -1,8 +1,5 @@
-package com.vasivkov.chat.server.v2.vo;
+package com.vasivkov.chat.common;
 
-/**
- * Created by eugene on 7/28/17.
- */
 public class GeneralResponse implements Response {
 
     private String error;
@@ -11,6 +8,14 @@ public class GeneralResponse implements Response {
     public GeneralResponse(boolean outcome,String error) {
         this.error = error;
         this.outcome = outcome;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public boolean isOutcome() {
+        return outcome;
     }
 
     @Override

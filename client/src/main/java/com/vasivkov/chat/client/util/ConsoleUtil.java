@@ -1,7 +1,7 @@
 package com.vasivkov.chat.client.util;
 
 import com.vasivkov.chat.common.AuthorizationRequest;
-import com.vasivkov.chat.common.ClosedConnectionRequest;
+import com.vasivkov.chat.common.ClientLeftRequest;
 import com.vasivkov.chat.common.RegistrationRequest;
 import org.apache.log4j.Logger;
 
@@ -37,8 +37,8 @@ public class ConsoleUtil {
         }
     }
 
-    public static ClosedConnectionRequest dataForCloseingConnection() {
+    public static ClientLeftRequest dataForCloseingConnection() {
         System.out.println("BYE!");
-        return new ClosedConnectionRequest();
+        return new ClientLeftRequest();
     }
 }

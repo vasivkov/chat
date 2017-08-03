@@ -1,6 +1,6 @@
 package com.vasivkov.chat.server.v2;
 
-import com.vasivkov.chat.server.v2.vo.Request;
+import com.vasivkov.chat.common.Request;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

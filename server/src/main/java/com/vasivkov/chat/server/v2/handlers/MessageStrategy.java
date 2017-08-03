@@ -1,11 +1,10 @@
 package com.vasivkov.chat.server.v2.handlers;
 
-import com.vasivkov.chat.server.ServerConnection;
 import com.vasivkov.chat.server.dao.MessageDao;
 import com.vasivkov.chat.server.v2.ServerV2;
-import com.vasivkov.chat.server.v2.vo.Message;
-import com.vasivkov.chat.server.v2.vo.MessageRequest;
-import com.vasivkov.chat.server.v2.vo.MessageResponse;
+import com.vasivkov.chat.common.Message;
+import com.vasivkov.chat.common.MessageRequest;
+import com.vasivkov.chat.common.MessageResponse;
 import com.vasivkov.chat.server.v2.vo.ResponseWithRecipients;
 import org.apache.log4j.Logger;
 
@@ -14,7 +13,7 @@ import java.util.*;
 
 public class MessageStrategy implements Strategy<MessageRequest> {
     private MessageDao messageDao = new MessageDao();
-    private  final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
+    private  final Logger LOGGER = Logger.getLogger(MessageStrategy.class.getName());
 
     @Override
     public List<ResponseWithRecipients> process(MessageRequest request) {

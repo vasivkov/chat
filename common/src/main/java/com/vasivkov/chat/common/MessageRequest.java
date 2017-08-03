@@ -1,12 +1,9 @@
-package com.vasivkov.chat.server.v2.vo;
+package com.vasivkov.chat.common;
 
-/**
- * Created by eugene on 7/28/17.
- */
-public class MessageResponse implements Response {
+public class MessageRequest extends Request {
     private Message message;
 
-    public MessageResponse(Message message) {
+    public MessageRequest(Message message) {
         this.message = message;
     }
 
@@ -19,7 +16,7 @@ public class MessageResponse implements Response {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MessageResponse that = (MessageResponse) o;
+        MessageRequest that = (MessageRequest) o;
 
         return message != null ? message.equals(that.message) : that.message == null;
     }
@@ -31,8 +28,14 @@ public class MessageResponse implements Response {
 
     @Override
     public String toString() {
-        return "MessageResponse{" +
+        return "MessageRequest{" +
                 "message=" + message +
                 '}';
+    }
+
+
+    @Override
+    public String getSender() {
+        return message.getAuthor();
     }
 }

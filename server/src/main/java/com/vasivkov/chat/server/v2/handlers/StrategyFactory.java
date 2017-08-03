@@ -1,6 +1,6 @@
 package com.vasivkov.chat.server.v2.handlers;
 
-import com.vasivkov.chat.server.v2.vo.*;
+import com.vasivkov.chat.common.*;
 
 
 public class StrategyFactory {

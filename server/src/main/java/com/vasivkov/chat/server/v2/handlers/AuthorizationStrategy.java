@@ -1,6 +1,9 @@
 package com.vasivkov.chat.server.v2.handlers;
 
-import com.vasivkov.chat.server.MessageHandler;
+import com.vasivkov.chat.common.AuthorizationRequest;
+import com.vasivkov.chat.common.GeneralResponse;
+import com.vasivkov.chat.common.Message;
+import com.vasivkov.chat.common.MessageResponse;
 import com.vasivkov.chat.server.User;
 import com.vasivkov.chat.server.dao.UserDao;
 import com.vasivkov.chat.server.v2.ServerV2;
@@ -12,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorizationStrategy implements Strategy<AuthorizationRequest> {
-    private static final Logger LOGGER = Logger.getLogger(MessageHandler.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AuthorizationStrategy.class.getName());
     private UserDao userDao = new UserDao();
 
     @Override

@@ -1,13 +1,12 @@
-package com.vasivkov.chat.server.v2.vo;
+package com.vasivkov.chat.common;
 
-/**
- * Created by eugene on 7/28/17.
- */
 public class ClientLeftRequest extends Request {
     private String clientLogin;
 
     public ClientLeftRequest(String clientLogin) {
         this.clientLogin = clientLogin;
+    }
+    public ClientLeftRequest(){
     }
 
     public String getClientLogin() {
