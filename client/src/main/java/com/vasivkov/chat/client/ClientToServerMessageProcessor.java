@@ -1,6 +1,6 @@
 package com.vasivkov.chat.client;
 
-import com.vasivkov.chat.common.ClosedConnectionRequest;
+import com.vasivkov.chat.common.ClientLeftRequest;
 import com.vasivkov.chat.common.Message;
 import com.vasivkov.chat.common.MessageTransportUtil;
 import org.apache.log4j.Logger;
@@ -29,10 +29,10 @@ public class ClientToServerMessageProcessor implements Runnable {
                 String text = br.readLine();
                 ClientCommands command = ClientCommands.of(text);
                 if (command == ClientCommands.QUIT) {
-                    MessageTransportUtil.sendMessageNoGuarantee(new ClosedConnectionRequest(), oos);
+                    MessageTransportUtil.sendMessageNoGuarantee(new ClientLeftRequest(), oos);
                     isFinished = true;
                 }
-                Message message = new Message(text, new Date());
+                Message message = new Message(text);
                 if (!"".equals(text)) {
                     MessageTransportUtil.sendMessageNoGuarantee(message, oos);
                 }

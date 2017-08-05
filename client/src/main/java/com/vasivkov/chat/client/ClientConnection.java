@@ -39,7 +39,8 @@ public class ClientConnection {
             }
 
             Request rq;
-            ClientCommands command = ClientCommands.of(choice.toUpperCase());
+            ClientCommands command = ClientCommands.of(choice.toUpperCase())
+                    ;
             switch (command) {
                 case AUTHORIZATION:
                     rq = ConsoleUtil.dataForAuthorization(br);
@@ -63,6 +64,7 @@ public class ClientConnection {
                     return;
                 }
                 Object object = ois.readObject();
+                System.out.println("answer is given " + object.getClass().getSimpleName());
                 if (object instanceof GeneralResponse) {
                     GeneralResponse response = (GeneralResponse) object;
                     if (response.isOutcome()) {
@@ -73,7 +75,7 @@ public class ClientConnection {
                         readingThread.start();
                         finished = true;
                     } else {
-                        System.out.println(response.isOutcome());
+                        System.out.println(response.getError());
                     }
                 }
             } catch (Exception e) {

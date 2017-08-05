@@ -12,16 +12,16 @@ import java.util.concurrent.BlockingQueue;
 public class ServerConnectionV2 implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(ServerConnectionV2.class.getName());
-    private int id;
+    private  int id;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private BlockingQueue<Request> requests;
     private boolean isAuthorized;
 
-    public ServerConnectionV2(Socket socket, BlockingQueue<Request> requests, int id) {
+    private ServerConnectionV2(Socket socket, BlockingQueue<Request> requests, int id) {
         this.requests = requests;
-        this.id = id;
         this.isAuthorized = false;
+        this.id = id;
 
         try {
             oos = new ObjectOutputStream(socket.getOutputStream());
@@ -33,11 +33,13 @@ public class ServerConnectionV2 implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("id-field in serverConnectionV2 = " + this.id);
         try {
             while (!isAuthorized) {
                 Object object = ois.readObject();
                 Request request = (Request) object;
-                request.setID(id);
+                request.setId(this.id);
+                System.out.println(" - request.getId = " + request.getId());
                 requests.add(request);
 
             }
@@ -57,5 +59,6 @@ public class ServerConnectionV2 implements Runnable {
     public boolean isAuthorized() {
         return isAuthorized;
     }
+
 }
 

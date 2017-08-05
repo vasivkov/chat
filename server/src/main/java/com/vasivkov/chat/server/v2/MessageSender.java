@@ -19,7 +19,12 @@ public class MessageSender implements Runnable {
     @Override
     public void run() {
         while (true){
-            ResponseWithRecipients responseWithRecipients = responses.poll();
+            ResponseWithRecipients responseWithRecipients = null;
+            try {
+                responseWithRecipients = responses.take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             for (Integer id : responseWithRecipients.getRecipients()) {
                ServerConnectionV2 serverConnectionV2 =  connectedClients.get(id);
                MessageTransportUtil.sendMessageNoGuarantee(responseWithRecipients.getResponse(), serverConnectionV2.getOos());

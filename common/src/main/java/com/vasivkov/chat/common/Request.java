@@ -3,16 +3,17 @@ package com.vasivkov.chat.common;
 import java.io.Serializable;
 
 public abstract class Request implements Serializable {
-    private int ID;
+    private int id;
 
     abstract String getSender();
 
     public int getId() {
-        return ID;
+        return id;
     }
 
-    public void setID(int ID) {
+    public void setId(int id) {
 
-        this.ID = ID;
+        this.id = id;
     }
+
 }

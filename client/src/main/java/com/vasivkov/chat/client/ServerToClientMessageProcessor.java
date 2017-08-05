@@ -31,7 +31,7 @@ public class ServerToClientMessageProcessor implements Runnable {
                 Message message = (Message) object;
                 String text = message.getText();
                 String login = message.getAuthor();
-                Date now = message.getDate();
+                Date now = message.getCreationDateTime();
                 DateFormat formatter = new SimpleDateFormat(FORMAT);
                 String s = formatter.format(now);
                System.out.println("   " + login + "(" + s + ")" + " >> " + text);

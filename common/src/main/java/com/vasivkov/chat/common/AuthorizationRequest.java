@@ -19,8 +19,8 @@ public class AuthorizationRequest extends Request {
         return password;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.ID = id;
     }
 
     @Override

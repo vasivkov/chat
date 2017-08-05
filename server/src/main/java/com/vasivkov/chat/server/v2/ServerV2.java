@@ -32,7 +32,6 @@ public class ServerV2 {
         new Thread(new MessageProcessor(requests, responses)).start();
 
         waitConnection(serverSocket);
-
     }
 
     public static Map<Integer, ServerConnectionV2> getConnectedClients() {
@@ -65,6 +64,7 @@ public class ServerV2 {
                 socket = serverSocket.accept();
                 ServerConnectionV2 serverConnectionV2 = new ServerConnectionV2(socket, requests, id);
                 connectedClients.put(id, serverConnectionV2);
+                System.out.println(connectedClients);
                 id++;
                 new Thread(serverConnectionV2).start();
             }

@@ -19,7 +19,12 @@ public class MessageProcessor implements Runnable {
     @Override
     public void run() {
         while(true) {
-            Request next = requests.poll();
+            Request next = null;
+            try {
+                next = requests.take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             Strategy s = StrategyFactory.getStrategy(next);
             List<ResponseWithRecipients> listOfResponses = s.process(next);
             for(ResponseWithRecipients response: listOfResponses){

@@ -23,6 +23,7 @@ public class AuthorizationStrategy implements Strategy<AuthorizationRequest> {
         String login = request.getLogin();
         String password = request.getPassword();
         int id = request.getId();
+        System.out.println( "login = " + login + ": id = " + id);
         List<ResponseWithRecipients> responses = new ArrayList<>();
         try {
             User user = userDao.findByLogin(login);

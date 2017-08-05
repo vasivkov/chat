@@ -13,7 +13,7 @@ public class ResponseWithRecipients {
         this.recipients = recipients;
         this.response = response;
     }
-    public ResponseWithRecipients(int id, Response respone) {
+    public ResponseWithRecipients(int id, Response response) {
         this.recipients = Collections.singletonList(id);
         this.response = response;
     }
