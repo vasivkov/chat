@@ -19,12 +19,15 @@ public class MessageStrategy implements Strategy<MessageRequest> {
     public List<ResponseWithRecipients> process(MessageRequest request) {
         List<ResponseWithRecipients> listOfResponses = new ArrayList<>();
         Message message = request.getMessage();
+        message.setCreationDateTime(new Date());
+
         try {
             messageDao.insertMessage(message);
         } catch (SQLException e) {
         LOGGER.error("Failed to save message from " + message.getAuthor() + " in database.");
         }
         listOfResponses.add(new ResponseWithRecipients(ServerV2.getAuthorizedClients(request.getId()), new MessageResponse(message)));
+        System.out.println(listOfResponses);
         return listOfResponses;
     }
 }

@@ -2,13 +2,13 @@ package com.vasivkov.chat.client;
 
 import com.vasivkov.chat.common.ClientLeftRequest;
 import com.vasivkov.chat.common.Message;
+import com.vasivkov.chat.common.MessageRequest;
 import com.vasivkov.chat.common.MessageTransportUtil;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Date;
 
 public class ClientToServerMessageProcessor implements Runnable {
     public static final Logger LOGGER = Logger.getLogger(ClientToServerMessageProcessor.class.getName());
@@ -32,9 +32,9 @@ public class ClientToServerMessageProcessor implements Runnable {
                     MessageTransportUtil.sendMessageNoGuarantee(new ClientLeftRequest(), oos);
                     isFinished = true;
                 }
-                Message message = new Message(text);
+                MessageRequest messageRequest = new MessageRequest(new Message(Client.getLogin(),text));
                 if (!"".equals(text)) {
-                    MessageTransportUtil.sendMessageNoGuarantee(message, oos);
+                    MessageTransportUtil.sendMessageNoGuarantee(messageRequest, oos);
                 }
             } catch (IOException e) {
                 LOGGER.error("Failed to sent message", e);

@@ -1,5 +1,6 @@
 package com.vasivkov.chat.client.util;
 
+import com.vasivkov.chat.client.Client;
 import com.vasivkov.chat.common.AuthorizationRequest;
 import com.vasivkov.chat.common.ClientLeftRequest;
 import com.vasivkov.chat.common.RegistrationRequest;
@@ -15,6 +16,7 @@ public class ConsoleUtil {
         try {
             System.out.print("Enter your login: ");
             String login = br.readLine();
+            Client.setLogin(login);
             System.out.print("Enter your password: ");
             String password = br.readLine();
             return new AuthorizationRequest(login, EncryptionUtil.generateHash(password));
@@ -28,6 +30,7 @@ public class ConsoleUtil {
         try {
             System.out.print("Think up your login: ");
             String login = br.readLine();
+            Client.setLogin(login);
             System.out.print("Think up the password: ");
             String password = br.readLine();
             return new RegistrationRequest(login, EncryptionUtil.generateHash(password));

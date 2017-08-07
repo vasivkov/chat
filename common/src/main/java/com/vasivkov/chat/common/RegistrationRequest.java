@@ -3,7 +3,6 @@ package com.vasivkov.chat.common;
 public class RegistrationRequest extends Request {
     private String login;
     private String password;
-    private int ID;
 
     public RegistrationRequest(String login, String password) {
         this.login = login;
@@ -11,7 +10,10 @@ public class RegistrationRequest extends Request {
     }
 
     public void setId(int id) {
-        this.ID = id;
+        super.setId(id);
+    }
+    public int getId() {
+        return super.getId();
     }
 
     public String getLogin() {

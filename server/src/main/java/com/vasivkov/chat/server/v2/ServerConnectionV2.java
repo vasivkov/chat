@@ -18,7 +18,7 @@ public class ServerConnectionV2 implements Runnable {
     private BlockingQueue<Request> requests;
     private boolean isAuthorized;
 
-    private ServerConnectionV2(Socket socket, BlockingQueue<Request> requests, int id) {
+    public ServerConnectionV2(Socket socket, BlockingQueue<Request> requests, int id) {
         this.requests = requests;
         this.isAuthorized = false;
         this.id = id;
@@ -33,13 +33,11 @@ public class ServerConnectionV2 implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("id-field in serverConnectionV2 = " + this.id);
         try {
             while (!isAuthorized) {
                 Object object = ois.readObject();
                 Request request = (Request) object;
                 request.setId(this.id);
-                System.out.println(" - request.getId = " + request.getId());
                 requests.add(request);
 
             }

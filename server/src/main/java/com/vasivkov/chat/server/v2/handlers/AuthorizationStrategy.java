@@ -36,7 +36,7 @@ public class AuthorizationStrategy implements Strategy<AuthorizationRequest> {
             } else {
                 ServerV2.getConnectedClients().get(id).setAuthorized(true);
                 responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "You are registrated!")));
-                responses.add(new ResponseWithRecipients(ServerV2.getAuthorizedClients(id), new MessageResponse(new Message("    " + login + " connected to chat!"))));
+                responses.add(new ResponseWithRecipients(ServerV2.getAuthorizedClients(id), new MessageResponse(new Message(login, " I'm IN CHAT!"))));
                 return responses;
             }
         } catch (SQLException e) {

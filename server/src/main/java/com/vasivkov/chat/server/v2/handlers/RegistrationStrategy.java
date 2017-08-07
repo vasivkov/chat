@@ -31,7 +31,7 @@ public class RegistrationStrategy implements Strategy<RegistrationRequest> {
                 ServerV2.getConnectedClients().get(id).setAuthorized(true);
                 userDao.insertUser(new User(login, password, new Date()));
                 responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "You are registrated!")));
-                responses.add(new ResponseWithRecipients(ServerV2.getAuthorizedClients(id), new MessageResponse(new Message("    " + login + " connected to chat!"))));
+                responses.add(new ResponseWithRecipients(ServerV2.getAuthorizedClients(id), new MessageResponse(new Message(login, "I'm IN CHAT!"))));
                 return responses;
             } else {
                 responses.add(new ResponseWithRecipients(id, new GeneralResponse(false, "Such login already exits!")));

@@ -4,7 +4,11 @@ public class AuthorizationRequest extends Request {
 
     private String login;
     private String password;
-    private int ID;
+
+    @Override
+    public int getId() {
+        return super.getId();
+    }
 
     public AuthorizationRequest(String login, String password) {
         this.login = login;
@@ -20,7 +24,7 @@ public class AuthorizationRequest extends Request {
     }
 
     public void setId(int id) {
-        this.ID = id;
+        super.setId(id);
     }
 
     @Override

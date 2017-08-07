@@ -33,6 +33,14 @@ public class MessageRequest extends Request {
                 '}';
     }
 
+    public int getId() {
+        return super.getId();
+    }
+
+    public void setId(int id) {
+        super.setId(id);
+    }
+
 
     @Override
     public String getSender() {

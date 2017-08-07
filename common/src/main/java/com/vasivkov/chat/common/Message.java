@@ -13,7 +13,12 @@ public class Message implements Serializable {
         this.text = text;
         this.creationDateTime = creationDateTime;
     }
-    public Message(String text){
+    public Message(String author, String text){
+        this.text = text;
+        this.author = author;
+    }
+
+    public Message(String text) {
         this.text = text;
     }
 
@@ -56,5 +61,13 @@ public class Message implements Serializable {
                 ", text='" + text + '\'' +
                 ", creationDateTime=" + creationDateTime +
                 '}';
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setCreationDateTime(Date creationDateTime) {
+        this.creationDateTime = creationDateTime;
     }
 }

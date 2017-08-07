@@ -64,7 +64,6 @@ public class ClientConnection {
                     return;
                 }
                 Object object = ois.readObject();
-                System.out.println("answer is given " + object.getClass().getSimpleName());
                 if (object instanceof GeneralResponse) {
                     GeneralResponse response = (GeneralResponse) object;
                     if (response.isOutcome()) {

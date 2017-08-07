@@ -1,6 +1,7 @@
 package com.vasivkov.chat.client;
 
 import com.vasivkov.chat.common.Message;
+import com.vasivkov.chat.common.MessageResponse;
 import org.apache.log4j.Logger;
 
 import java.io.ObjectInputStream;
@@ -27,14 +28,16 @@ public class ServerToClientMessageProcessor implements Runnable {
                 LOGGER.error("Failed to get data from server", e);
                 return;
             }
-            if (object instanceof Message) {
-                Message message = (Message) object;
+            if (object instanceof MessageResponse) {
+                MessageResponse messageResponse = (MessageResponse) object;
+                Message message = messageResponse.getMessage();
                 String text = message.getText();
                 String login = message.getAuthor();
-                Date now = message.getCreationDateTime();
-                DateFormat formatter = new SimpleDateFormat(FORMAT);
-                String s = formatter.format(now);
-               System.out.println("   " + login + "(" + s + ")" + " >> " + text);
+                System.out.println(login + " >> " + text);
+//                Date now = message.getCreationDateTime();
+//                DateFormat formatter = new SimpleDateFormat(FORMAT);
+//                String s = formatter.format(now);
+//               System.out.println("   " + login + "(" + s + ")" + " >> " + text);
             }
         }
     }
