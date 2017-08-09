@@ -21,7 +21,7 @@ public class ConsoleUtil {
             String password = br.readLine();
             return new AuthorizationRequest(login, EncryptionUtil.generateHash(password));
         } catch (IOException e) {
-            LOGGER.error("Failed to read data from console to autorization", e);
+            LOGGER.error("Failed to read data from console to authorization", e);
             throw new RuntimeException(e);
         }
     }
@@ -35,7 +35,7 @@ public class ConsoleUtil {
             String password = br.readLine();
             return new RegistrationRequest(login, EncryptionUtil.generateHash(password));
         } catch (IOException e) {
-            LOGGER.error("Failed to read data from console to autorization", e);
+            LOGGER.error("Failed to read data from console to registration", e);
             throw new RuntimeException(e);
         }
     }

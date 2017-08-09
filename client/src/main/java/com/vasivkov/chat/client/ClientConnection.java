@@ -10,7 +10,6 @@ import java.net.Socket;
 public class ClientConnection {
     private static final Logger LOGGER = Logger.getLogger(ClientConnection.class.getName());
     private Socket socket;
-
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private BufferedReader br;
@@ -22,7 +21,7 @@ public class ClientConnection {
             oos = new ObjectOutputStream(socket.getOutputStream());
             br = new BufferedReader(new InputStreamReader(System.in));
         } catch (IOException e) {
-            LOGGER.fatal("Failed to create streams for reading and writing messages", e);
+            LOGGER.fatal("Failed to create streams for reading and writing messages from server", e);
             throw new RuntimeException(e);
         }
     }
@@ -30,7 +29,7 @@ public class ClientConnection {
     void connect() {
         boolean finished = false;
         while (!finished) {
-            System.out.println("For registration: R, for autoriation: A, for exit: Q");
+            System.out.println("For registration: R, for authorization: A, for exit: Q");
             String choice = "";
             try {
                 choice = br.readLine();
@@ -39,8 +38,7 @@ public class ClientConnection {
             }
 
             Request rq;
-            ClientCommands command = ClientCommands.of(choice.toUpperCase())
-                    ;
+            ClientCommands command = ClientCommands.of(choice.toUpperCase());
             switch (command) {
                 case AUTHORIZATION:
                     rq = ConsoleUtil.dataForAuthorization(br);
@@ -68,17 +66,19 @@ public class ClientConnection {
                     GeneralResponse response = (GeneralResponse) object;
                     if (response.isOutcome()) {
                         System.out.println(response.getError());
-                        Thread writingThread = new Thread(new ClientToServerMessageProcessor(oos, br));
+                        Thread writingThread = new Thread(new ClientToServerMessageProcessor(oos, br, socket));
                         Thread readingThread = new Thread(new ServerToClientMessageProcessor(ois));
                         writingThread.start();
                         readingThread.start();
                         finished = true;
+                        LOGGER.info("Connecting to chat success!");
                     } else {
                         System.out.println(response.getError());
+                        LOGGER.info("Failed to connect to chat. " + response.getError());
                     }
                 }
             } catch (Exception e) {
-                LOGGER.error("Failed to get responce from server", e);
+                LOGGER.error("Failed to get response from server", e);
             }
         }
     }

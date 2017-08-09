@@ -9,13 +9,16 @@ import org.apache.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 public class ClientToServerMessageProcessor implements Runnable {
-    public static final Logger LOGGER = Logger.getLogger(ClientToServerMessageProcessor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ClientToServerMessageProcessor.class.getName());
     private ObjectOutputStream oos;
     private BufferedReader br;
+    private Socket socket;
 
-    public ClientToServerMessageProcessor(ObjectOutputStream oos, BufferedReader br) {
+    ClientToServerMessageProcessor(ObjectOutputStream oos, BufferedReader br, Socket socket) {
+        this.socket = socket;
         this.oos = oos;
         this.br = br;
     }
@@ -27,18 +30,21 @@ public class ClientToServerMessageProcessor implements Runnable {
         while (!isFinished) {
             try {
                 String text = br.readLine();
-                ClientCommands command = ClientCommands.of(text);
-                if (command == ClientCommands.QUIT) {
-                    MessageTransportUtil.sendMessageNoGuarantee(new ClientLeftRequest(), oos);
+                if (text.toUpperCase().equals("Q")) {
+                    MessageTransportUtil.sendMessageWithRepeat(new ClientLeftRequest(Client.getLogin()), oos, 5);
+                    socket.close();
+                    LOGGER.info(Client.getLogin() + " : exit from chat.");
                     isFinished = true;
-                }
-                MessageRequest messageRequest = new MessageRequest(new Message(Client.getLogin(),text));
-                if (!"".equals(text)) {
-                    MessageTransportUtil.sendMessageNoGuarantee(messageRequest, oos);
+                } else {
+                    MessageRequest messageRequest = new MessageRequest(new Message(Client.getLogin(), text));
+                    if (!"".equals(text)) {
+                        MessageTransportUtil.sendMessageNoGuarantee(messageRequest, oos);
+                    }
                 }
             } catch (IOException e) {
-                LOGGER.error("Failed to sent message", e);
+                LOGGER.error(Client.getLogin() + ": Failed to sent message", e);
             }
         }
     }
+
 }

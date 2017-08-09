@@ -12,7 +12,8 @@ import java.util.Date;
 public class ServerToClientMessageProcessor implements Runnable {
     private ObjectInputStream ois;
     private static final Logger LOGGER = Logger.getLogger(ServerToClientMessageProcessor.class.getName());
-    private  static  final String FORMAT = "HH:mm:ss";
+    private static final String FORMAT = "hh:mm:ss";
+    private static final DateFormat FORMATTER = new SimpleDateFormat(FORMAT);
 
     public ServerToClientMessageProcessor(ObjectInputStream ois) {
         this.ois = ois;
@@ -25,7 +26,7 @@ public class ServerToClientMessageProcessor implements Runnable {
             try {
                 object = ois.readObject();
             } catch (Exception e) {
-                LOGGER.error("Failed to get data from server", e);
+                LOGGER.error(Client.getLogin() + ": Failed to get data from server", e);
                 return;
             }
             if (object instanceof MessageResponse) {
@@ -33,11 +34,9 @@ public class ServerToClientMessageProcessor implements Runnable {
                 Message message = messageResponse.getMessage();
                 String text = message.getText();
                 String login = message.getAuthor();
-                System.out.println(login + " >> " + text);
-//                Date now = message.getCreationDateTime();
-//                DateFormat formatter = new SimpleDateFormat(FORMAT);
-//                String s = formatter.format(now);
-//               System.out.println("   " + login + "(" + s + ")" + " >> " + text);
+                Date now = message.getCreationDateTime();
+                String s = FORMATTER.format(now);
+                System.out.println("   " + login + "(" + s + ")" + " >> " + text);
             }
         }
     }

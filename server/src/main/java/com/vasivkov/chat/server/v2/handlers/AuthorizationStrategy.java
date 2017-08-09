@@ -5,13 +5,15 @@ import com.vasivkov.chat.common.GeneralResponse;
 import com.vasivkov.chat.common.Message;
 import com.vasivkov.chat.common.MessageResponse;
 import com.vasivkov.chat.server.User;
+import com.vasivkov.chat.server.dao.MessageDao;
 import com.vasivkov.chat.server.dao.UserDao;
-import com.vasivkov.chat.server.v2.ServerV2;
+import com.vasivkov.chat.server.v2.Server;
 import com.vasivkov.chat.server.v2.vo.*;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AuthorizationStrategy implements Strategy<AuthorizationRequest> {
@@ -23,7 +25,7 @@ public class AuthorizationStrategy implements Strategy<AuthorizationRequest> {
         String login = request.getLogin();
         String password = request.getPassword();
         int id = request.getId();
-        System.out.println( "login = " + login + ": id = " + id);
+        LOGGER.info("login = " + login + ": id = " + id);
         List<ResponseWithRecipients> responses = new ArrayList<>();
         try {
             User user = userDao.findByLogin(login);
@@ -34,9 +36,11 @@ public class AuthorizationStrategy implements Strategy<AuthorizationRequest> {
                 responses.add(new ResponseWithRecipients(id, new GeneralResponse(false, "Invalid password!")));
                 return responses;
             } else {
-                ServerV2.getConnectedClients().get(id).setAuthorized(true);
                 responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "You are registrated!")));
-                responses.add(new ResponseWithRecipients(ServerV2.getAuthorizedClients(id), new MessageResponse(new Message(login, " I'm IN CHAT!"))));
+                responses.addAll(Server.getLastLetters(new MessageDao().getLastTenMessages(), id));
+                Server.getConnectedClients().get(id).setAuthorized(true);
+                LOGGER.info(id + " - " + login + ": Connected to chat");
+                responses.add(new ResponseWithRecipients(Server.getAuthorizedClients(id), new MessageResponse(new Message(login, "I'm IN CHAT", new Date()))));
                 return responses;
             }
         } catch (SQLException e) {

@@ -9,18 +9,20 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
-public class ServerConnectionV2 implements Runnable {
+public class ServerConnection implements Runnable {
 
-    private static final Logger LOGGER = Logger.getLogger(ServerConnectionV2.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
     private  int id;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private BlockingQueue<Request> requests;
     private boolean isAuthorized;
+    private boolean isConnected;
 
-    public ServerConnectionV2(Socket socket, BlockingQueue<Request> requests, int id) {
+    public ServerConnection(Socket socket, BlockingQueue<Request> requests, int id) {
         this.requests = requests;
         this.isAuthorized = false;
+        this.isConnected = true;
         this.id = id;
 
         try {
@@ -34,7 +36,7 @@ public class ServerConnectionV2 implements Runnable {
     @Override
     public void run() {
         try {
-            while (!isAuthorized) {
+            while (isConnected) {
                 Object object = ois.readObject();
                 Request request = (Request) object;
                 request.setId(this.id);
@@ -42,7 +44,7 @@ public class ServerConnectionV2 implements Runnable {
 
             }
         } catch (IOException | ClassNotFoundException e) {
-            LOGGER.error("Failed to read data from client");
+            LOGGER.error("Failed to read data from client", e);
         }
     }
 
@@ -56,6 +58,10 @@ public class ServerConnectionV2 implements Runnable {
 
     public boolean isAuthorized() {
         return isAuthorized;
+    }
+
+    public void setConnected(boolean connected) {
+        isConnected = connected;
     }
 
 }

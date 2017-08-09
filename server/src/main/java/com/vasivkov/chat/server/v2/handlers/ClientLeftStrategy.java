@@ -1,15 +1,15 @@
 package com.vasivkov.chat.server.v2.handlers;
 
 import com.vasivkov.chat.common.ClientLeftRequest;
-import com.vasivkov.chat.common.GeneralResponse;
 import com.vasivkov.chat.common.Message;
 import com.vasivkov.chat.common.MessageResponse;
 import com.vasivkov.chat.server.dao.UserDao;
-import com.vasivkov.chat.server.v2.ServerV2;
+import com.vasivkov.chat.server.v2.Server;
 import com.vasivkov.chat.server.v2.vo.ResponseWithRecipients;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ClientLeftStrategy implements Strategy<ClientLeftRequest>{
@@ -20,10 +20,11 @@ public class ClientLeftStrategy implements Strategy<ClientLeftRequest>{
     public List<ResponseWithRecipients> process(ClientLeftRequest request) {
         int id = request.getId();
         String login = request.getClientLogin();
-        ServerV2.getConnectedClients().get(id).setAuthorized(false);
+        Server.getConnectedClients().get(id).setConnected(false);
+        Server.getConnectedClients().remove(id);
+        LOGGER.info(id + " - " + login + ": deleted from chat");
         List<ResponseWithRecipients> responses = new ArrayList<>();
-        responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "")));
-        responses.add(new ResponseWithRecipients(ServerV2.getAuthorizedClients(id), new MessageResponse( new Message( "   " + login + " left the chat"))));
+        responses.add(new ResponseWithRecipients(Server.getAuthorizedClients(id), new MessageResponse( new Message(login, "I'm LEFT THE CHAT!", new Date()))));
         return responses;
     }
 }

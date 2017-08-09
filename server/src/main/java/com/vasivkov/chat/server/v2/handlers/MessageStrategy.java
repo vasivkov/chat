@@ -1,7 +1,7 @@
 package com.vasivkov.chat.server.v2.handlers;
 
 import com.vasivkov.chat.server.dao.MessageDao;
-import com.vasivkov.chat.server.v2.ServerV2;
+import com.vasivkov.chat.server.v2.Server;
 import com.vasivkov.chat.common.Message;
 import com.vasivkov.chat.common.MessageRequest;
 import com.vasivkov.chat.common.MessageResponse;
@@ -20,14 +20,12 @@ public class MessageStrategy implements Strategy<MessageRequest> {
         List<ResponseWithRecipients> listOfResponses = new ArrayList<>();
         Message message = request.getMessage();
         message.setCreationDateTime(new Date());
-
         try {
             messageDao.insertMessage(message);
         } catch (SQLException e) {
         LOGGER.error("Failed to save message from " + message.getAuthor() + " in database.");
         }
-        listOfResponses.add(new ResponseWithRecipients(ServerV2.getAuthorizedClients(request.getId()), new MessageResponse(message)));
-        System.out.println(listOfResponses);
+        listOfResponses.add(new ResponseWithRecipients(Server.getAuthorizedClients(request.getId()), new MessageResponse(message)));
         return listOfResponses;
     }
 }

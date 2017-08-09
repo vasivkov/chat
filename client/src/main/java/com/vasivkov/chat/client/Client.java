@@ -23,13 +23,3 @@ public class Client {
         clientConnection.connect();
     }
 }
-
-
-
-
-
-
-
-
-
-

@@ -5,8 +5,9 @@ import com.vasivkov.chat.common.Message;
 import com.vasivkov.chat.common.MessageResponse;
 import com.vasivkov.chat.common.RegistrationRequest;
 import com.vasivkov.chat.server.User;
+import com.vasivkov.chat.server.dao.MessageDao;
 import com.vasivkov.chat.server.dao.UserDao;
-import com.vasivkov.chat.server.v2.ServerV2;
+import com.vasivkov.chat.server.v2.Server;
 import com.vasivkov.chat.server.v2.vo.*;
 import org.apache.log4j.Logger;
 
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class RegistrationStrategy implements Strategy<RegistrationRequest> {
     private static final Logger LOGGER = Logger.getLogger(RegistrationStrategy.class.getName());
-    private  UserDao userDao = new UserDao();
+    private UserDao userDao = new UserDao();
 
     @Override
     public List<ResponseWithRecipients> process(RegistrationRequest request) {
@@ -28,10 +29,12 @@ public class RegistrationStrategy implements Strategy<RegistrationRequest> {
         try {
             User user = userDao.findByLogin(login);
             if (user == null) {
-                ServerV2.getConnectedClients().get(id).setAuthorized(true);
+                Server.getConnectedClients().get(id).setAuthorized(true);
+                LOGGER.info(id + " - " + login + ": Connected to chat");
                 userDao.insertUser(new User(login, password, new Date()));
                 responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "You are registrated!")));
-                responses.add(new ResponseWithRecipients(ServerV2.getAuthorizedClients(id), new MessageResponse(new Message(login, "I'm IN CHAT!"))));
+                responses.addAll(Server.getLastLetters(new MessageDao().getLastTenMessages(), id));
+                responses.add(new ResponseWithRecipients(Server.getAuthorizedClients(id), new MessageResponse(new Message(login, "I'm IN CHAT!", new Date()))));
                 return responses;
             } else {
                 responses.add(new ResponseWithRecipients(id, new GeneralResponse(false, "Such login already exits!")));

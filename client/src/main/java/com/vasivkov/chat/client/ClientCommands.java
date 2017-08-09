@@ -6,7 +6,7 @@ import java.util.Arrays;
 public enum ClientCommands {
     REGISTRATION("R"),
     AUTHORIZATION("A"),
-    QUIT(":Q"),
+    QUIT("Q"),
     UNKNOWN(null);
 
     private String command;

@@ -38,8 +38,8 @@ public class MessageDao extends ChatAbstractDao {
             preparedStatement = connection.prepareStatement(GET_MESSAGE);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Message message = new Message(resultSet.getString("text"),
-                        resultSet.getString("author"),
+                Message message = new Message(resultSet.getString("author"),
+                        resultSet.getString("text"),
                         resultSet.getTimestamp("message_datetime"));
                 messageList.add(message);
             }
