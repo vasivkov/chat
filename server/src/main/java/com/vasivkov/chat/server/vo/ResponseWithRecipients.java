@@ -1,4 +1,4 @@
-package com.vasivkov.chat.server.v2.vo;
+package com.vasivkov.chat.server.vo;
 
 import com.vasivkov.chat.common.Response;
 

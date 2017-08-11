@@ -1,8 +1,7 @@
-package com.vasivkov.chat.server.v2;
+package com.vasivkov.chat.server;
 
-import com.vasivkov.chat.common.ClientLeftRequest;
 import com.vasivkov.chat.common.MessageTransportUtil;
-import com.vasivkov.chat.server.v2.vo.ResponseWithRecipients;
+import com.vasivkov.chat.server.vo.ResponseWithRecipients;
 import org.apache.log4j.Logger;
 
 import java.util.Map;
@@ -29,8 +28,8 @@ public class MessageSender implements Runnable {
                 LOGGER.error("Thread MessageSender was interrupted", e);
             }
             for (Integer id : responseWithRecipients.getRecipients()) {
-                ServerConnection serverConnectionV2 = connectedClients.get(id);
-                MessageTransportUtil.sendMessageNoGuarantee(responseWithRecipients.getResponse(), serverConnectionV2.getOos());
+                ServerConnection serverConnection = connectedClients.get(id);
+                MessageTransportUtil.sendMessageNoGuarantee(responseWithRecipients.getResponse(), serverConnection.getOos());
             }
         }
     }

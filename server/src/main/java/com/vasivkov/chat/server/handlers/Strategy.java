@@ -1,7 +1,7 @@
-package com.vasivkov.chat.server.v2.handlers;
+package com.vasivkov.chat.server.handlers;
 
 import com.vasivkov.chat.common.Request;
-import com.vasivkov.chat.server.v2.vo.ResponseWithRecipients;
+import com.vasivkov.chat.server.vo.ResponseWithRecipients;
 
 import java.util.List;
 

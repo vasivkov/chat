@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 public class UserDao extends ChatAbstractDao {
     private static final String FIND_BY_LOGIN = "SELECT login, password FROM users WHERE login=?";
     private static final String INSERT_USER = "INSERT INTO users (login, password, date_of_registration) VALUES(?, ?, ?)";
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 
     public User findByLogin(String login) throws SQLException {
         Connection connection = null;

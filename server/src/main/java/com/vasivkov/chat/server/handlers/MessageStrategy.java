@@ -1,11 +1,11 @@
-package com.vasivkov.chat.server.v2.handlers;
+package com.vasivkov.chat.server.handlers;
 
 import com.vasivkov.chat.server.dao.MessageDao;
-import com.vasivkov.chat.server.v2.Server;
+import com.vasivkov.chat.server.Server;
 import com.vasivkov.chat.common.Message;
 import com.vasivkov.chat.common.MessageRequest;
 import com.vasivkov.chat.common.MessageResponse;
-import com.vasivkov.chat.server.v2.vo.ResponseWithRecipients;
+import com.vasivkov.chat.server.vo.ResponseWithRecipients;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;

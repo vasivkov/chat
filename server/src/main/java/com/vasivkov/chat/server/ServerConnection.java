@@ -1,4 +1,4 @@
-package com.vasivkov.chat.server.v2;
+package com.vasivkov.chat.server;
 
 import com.vasivkov.chat.common.Request;
 import org.apache.log4j.Logger;
@@ -38,9 +38,11 @@ public class ServerConnection implements Runnable {
         try {
             while (isConnected) {
                 Object object = ois.readObject();
-                Request request = (Request) object;
-                request.setId(this.id);
-                requests.add(request);
+                if(object instanceof Request) {
+                    Request request = (Request) object;
+                    request.setId(this.id);
+                    requests.add(request);
+                }
 
             }
         } catch (IOException | ClassNotFoundException e) {
