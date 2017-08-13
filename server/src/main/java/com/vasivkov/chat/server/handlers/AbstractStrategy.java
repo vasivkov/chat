@@ -15,11 +15,13 @@ import java.util.List;
 public class AbstractStrategy {
     private static final Logger LOGGER = Logger.getLogger(AbstractStrategy.class.getName());
 
-    public static List<ResponseWithRecipients> getLastMessages(int id) {
+    private MessageDao messageDao = new MessageDao();
+
+    public List<ResponseWithRecipients> getLastMessages(int id) {
         List<ResponseWithRecipients> responseWithRecipients = new ArrayList<>();
         List<Message> messages = Collections.EMPTY_LIST;
         try {
-            messages = new MessageDao().getLastTenMessages();
+            messages = messageDao.getLastTenMessages();
         } catch (SQLException e) {
             LOGGER.error("Failed to write messages from database", e);
         }

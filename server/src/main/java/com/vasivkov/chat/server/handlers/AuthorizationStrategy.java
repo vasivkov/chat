@@ -15,6 +15,7 @@ import java.util.*;
 
 public class AuthorizationStrategy extends AbstractStrategy implements Strategy<AuthorizationRequest> {
     private static final Logger LOGGER = Logger.getLogger(AuthorizationStrategy.class.getName());
+
     private UserDao userDao = new UserDao();
 
     @Override
@@ -33,7 +34,7 @@ public class AuthorizationStrategy extends AbstractStrategy implements Strategy<
                 responses.add(new ResponseWithRecipients(id, new GeneralResponse(false, "Invalid password!")));
                 return responses;
             } else {
-               return registeredNewUser(login, id);
+               return authorizedNewUser(login, id);
             }
         } catch (SQLException e) {
             responses.add(new ResponseWithRecipients(id, new GeneralResponse(false, "Please, try again later!")));
@@ -42,13 +43,21 @@ public class AuthorizationStrategy extends AbstractStrategy implements Strategy<
         }
 
     }
-    private List<ResponseWithRecipients> registeredNewUser( String login, int id){
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    private List<ResponseWithRecipients> authorizedNewUser(String login, int id){
         List<ResponseWithRecipients> responses = new ArrayList<>();
         responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "You are registrated!")));
         responses.addAll(getLastMessages(id));
         Server.getConnectedClients().get(id).setAuthorized(true);
         LOGGER.info(id + " - " + login + ": Connected to chat");
-        responses.add(new ResponseWithRecipients(Server.getAuthorizedClients(id), new MessageResponse(new Message(login, "I'm IN CHAT", new Date()))));
+        List<Integer> authorizedClients = Server.getAuthorizedClients(id);
+        if (!authorizedClients.isEmpty()) {
+            responses.add(new ResponseWithRecipients(authorizedClients, new MessageResponse(new Message(login, "I'm IN CHAT", new Date()))));
+        }
         return responses;
     }
 }

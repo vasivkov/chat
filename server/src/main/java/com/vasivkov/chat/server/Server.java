@@ -39,6 +39,10 @@ public class Server {
         return connectedClients;
     }
 
+    public static void addClient(Integer i, ServerConnection connection) {
+        connectedClients.put(i, connection);
+    }
+
     private static void verifyProgramArguments(String[] args) {
         if (args.length != 1) {
             System.out.println("Wrong input argument!");

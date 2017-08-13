@@ -19,6 +19,9 @@ public class ServerConnection implements Runnable {
     private boolean isAuthorized;
     private boolean isConnected;
 
+    public ServerConnection() {
+    }
+
     public ServerConnection(Socket socket, BlockingQueue<Request> requests, int id) {
         this.requests = requests;
         this.isAuthorized = false;

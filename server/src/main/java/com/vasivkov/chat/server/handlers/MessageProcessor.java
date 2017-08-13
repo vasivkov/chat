@@ -30,9 +30,7 @@ public class MessageProcessor implements Runnable {
             }
             Strategy s = StrategyFactory.getStrategy(next);
             List<ResponseWithRecipients> listOfResponses = s.process(next);
-            for(ResponseWithRecipients response: listOfResponses){
-                responses.add(response);
-            }
+            responses.addAll(listOfResponses);
         }
     }
 

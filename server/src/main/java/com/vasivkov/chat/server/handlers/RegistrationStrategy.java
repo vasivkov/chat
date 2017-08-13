@@ -49,6 +49,7 @@ public class RegistrationStrategy extends AbstractStrategy implements Strategy<R
         responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "You are registrated!")));
         responses.addAll(getLastMessages(id));
         responses.add(new ResponseWithRecipients(Server.getAuthorizedClients(id), new MessageResponse(new Message(login, "I'm IN CHAT!", new Date()))));
+        
         return responses;
     }
 }
