@@ -50,7 +50,7 @@ public class AuthorizationStrategy extends AbstractStrategy implements Strategy<
 
     private List<ResponseWithRecipients> authorizedNewUser(String login, int id){
         List<ResponseWithRecipients> responses = new ArrayList<>();
-        responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "You are registrated!")));
+        responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "You are registered!")));
         responses.addAll(getLastMessages(id));
         Server.getConnectedClients().get(id).setAuthorized(true);
         LOGGER.info(id + " - " + login + ": Connected to chat");

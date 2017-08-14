@@ -23,7 +23,7 @@ public class AbstractStrategy {
         try {
             messages = messageDao.getLastTenMessages();
         } catch (SQLException e) {
-            LOGGER.error("Failed to write messages from database", e);
+            LOGGER.error("Failed to read messages from database", e);
         }
         for (Message message : messages) {
             responseWithRecipients.add(new ResponseWithRecipients(id, new MessageResponse(message)));

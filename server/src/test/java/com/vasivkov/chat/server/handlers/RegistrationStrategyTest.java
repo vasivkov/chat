@@ -1,7 +1,7 @@
 package com.vasivkov.chat.server.handlers;
 
-import com.vasivkov.chat.common.AuthorizationRequest;
 import com.vasivkov.chat.common.GeneralResponse;
+import com.vasivkov.chat.common.RegistrationRequest;
 import com.vasivkov.chat.server.Server;
 import com.vasivkov.chat.server.ServerConnection;
 import com.vasivkov.chat.server.User;
@@ -18,17 +18,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AuthorizationStrategyTest {
-
+public class RegistrationStrategyTest {
     private static final String TEST_LOGIN = "test_login";
     private static final String TEST_PASS = "test_pass";
-    private static final String TEST_INCORRECT_PASS = "test_incorrect_pass";
     private static final Integer CLIENT1_CONNECTION_ID = 1;
     private static final Integer CLIENT2_CONNECTION_ID = 2;
     private static final Integer CLIENT3_CONNECTION_ID = 3;
@@ -40,7 +36,7 @@ public class AuthorizationStrategyTest {
     private MessageDao messageDao;
 
     @InjectMocks
-    AuthorizationStrategy as = new AuthorizationStrategy();
+    RegistrationStrategy as = new RegistrationStrategy();
 
     @Before
     public void setUp() {
@@ -50,15 +46,14 @@ public class AuthorizationStrategyTest {
     }
 
     @Test
-    public void processExistingUser() throws Exception {
-        when(userDao.findByLogin(TEST_LOGIN)).thenReturn(new User(TEST_LOGIN, TEST_PASS));
+    public void processNewUser() throws Exception {
+        when(userDao.findByLogin(TEST_LOGIN)).thenReturn(null);
         when(messageDao.getLastTenMessages()).thenReturn(Collections.EMPTY_LIST);
 
-        AuthorizationRequest request = new AuthorizationRequest(TEST_LOGIN, TEST_PASS);
+        RegistrationRequest request = new RegistrationRequest(TEST_LOGIN, TEST_PASS);
         request.setId(CLIENT1_CONNECTION_ID);
 
         List<ResponseWithRecipients> res = as.process(request);
-        System.out.println(res);
         assertEquals(1, res.size());
         ResponseWithRecipients response = res.get(0);
         GeneralResponse gr = (GeneralResponse) response.getResponse();
@@ -66,47 +61,39 @@ public class AuthorizationStrategyTest {
 
         assertEquals(1, response.getRecipients().size());
         assertTrue(response.getRecipients().contains(CLIENT1_CONNECTION_ID));
+
         assertTrue(Server.getConnectedClients().get(CLIENT1_CONNECTION_ID).isAuthorized());
+
     }
 
     @Test
-    public void processLoginInvalid() throws Exception {
-        when(userDao.findByLogin(TEST_LOGIN)).thenReturn(null);
+    public void processExistingLogin() throws Exception{
+        when(userDao.findByLogin(TEST_LOGIN)).thenReturn(new User());
 
-        AuthorizationRequest request = new AuthorizationRequest(TEST_LOGIN, TEST_PASS);
+        RegistrationRequest request = new RegistrationRequest(TEST_LOGIN, TEST_PASS);
         request.setId(CLIENT1_CONNECTION_ID);
 
         List<ResponseWithRecipients> res = as.process(request);
-        GeneralResponse gr = (GeneralResponse) res.get(0).getResponse();
-        assertFalse(gr.isOutcome());
-
-        assertEquals(1, res.get(0).getRecipients().size());
         assertEquals(1, res.size());
-        assertFalse(Server.getConnectedClients().get(CLIENT1_CONNECTION_ID).isAuthorized());
-    }
 
-    @Test
-    public void processPasswordInvalid() throws Exception {
-        when(userDao.findByLogin(TEST_LOGIN)).thenReturn(new User(TEST_LOGIN, TEST_PASS));
-
-        AuthorizationRequest request = new AuthorizationRequest(TEST_LOGIN, TEST_INCORRECT_PASS);
-        request.setId(CLIENT1_CONNECTION_ID);
-
-        List<ResponseWithRecipients> res = as.process(request);
-        GeneralResponse gr = (GeneralResponse) res.get(0).getResponse();
+        ResponseWithRecipients response = res.get(0);
+        GeneralResponse gr = (GeneralResponse) response.getResponse();
         assertFalse(gr.isOutcome());
+
         assertFalse(Server.getConnectedClients().get(CLIENT1_CONNECTION_ID).isAuthorized());
+
     }
 
     @Test
     public void sendingGreetingMessagesToOtherClient() throws Exception {
-        when(userDao.findByLogin(TEST_LOGIN)).thenReturn(new User(TEST_LOGIN, TEST_PASS));
+        when(userDao.findByLogin(TEST_LOGIN)).thenReturn(null);
         when(messageDao.getLastTenMessages()).thenReturn(Collections.EMPTY_LIST);
 
-        AuthorizationRequest request = new AuthorizationRequest(TEST_LOGIN, TEST_PASS);
+        RegistrationRequest request = new RegistrationRequest(TEST_LOGIN, TEST_PASS);
         request.setId(CLIENT1_CONNECTION_ID);
         Server.getConnectedClients().get(CLIENT2_CONNECTION_ID).setAuthorized(true);
         List<ResponseWithRecipients> res = as.process(request);
         assertEquals(2, res.size());
     }
+
 }

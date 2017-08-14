@@ -5,7 +5,6 @@ import com.vasivkov.chat.common.Message;
 import com.vasivkov.chat.common.MessageResponse;
 import com.vasivkov.chat.common.RegistrationRequest;
 import com.vasivkov.chat.server.User;
-import com.vasivkov.chat.server.dao.MessageDao;
 import com.vasivkov.chat.server.dao.UserDao;
 import com.vasivkov.chat.server.Server;
 import com.vasivkov.chat.server.vo.*;
@@ -13,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +22,6 @@ public class RegistrationStrategy extends AbstractStrategy implements Strategy<R
     @Override
     public List<ResponseWithRecipients> process(RegistrationRequest request) {
         String login = request.getLogin();
-        String password = request.getPassword();
         int id = request.getId();
         List<ResponseWithRecipients> responses = new ArrayList<>();
         try {
@@ -48,8 +45,11 @@ public class RegistrationStrategy extends AbstractStrategy implements Strategy<R
         userDao.insertUser(new User(login, password, new Date()));
         responses.add(new ResponseWithRecipients(id, new GeneralResponse(true, "You are registrated!")));
         responses.addAll(getLastMessages(id));
-        responses.add(new ResponseWithRecipients(Server.getAuthorizedClients(id), new MessageResponse(new Message(login, "I'm IN CHAT!", new Date()))));
-        
+        List<Integer> authorizedClients = Server.getAuthorizedClients(id);
+        if (!authorizedClients.isEmpty()) {
+            responses.add(new ResponseWithRecipients(authorizedClients, new MessageResponse(new Message(login, "I'm IN CHAT", new Date()))));
+        }
+
         return responses;
     }
 }

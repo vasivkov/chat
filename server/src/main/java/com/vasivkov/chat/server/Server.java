@@ -1,8 +1,5 @@
 package com.vasivkov.chat.server;
 
-import com.vasivkov.chat.common.Message;
-import com.vasivkov.chat.common.MessageResponse;
-import com.vasivkov.chat.server.dao.MessageDao;
 import com.vasivkov.chat.server.handlers.MessageProcessor;
 import com.vasivkov.chat.common.Request;
 import com.vasivkov.chat.server.vo.ResponseWithRecipients;
@@ -11,7 +8,6 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -69,6 +65,7 @@ public class Server {
                 socket = serverSocket.accept();
                 ServerConnection serverConnection = new ServerConnection(socket, requests, id);
                 connectedClients.put(id, serverConnection);
+                System.out.println("connectedClients: " + connectedClients);
                 id++;
                 new Thread(serverConnection).start();
             }
