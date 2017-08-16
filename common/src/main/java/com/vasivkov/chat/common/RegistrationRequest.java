@@ -1,6 +1,5 @@
 package com.vasivkov.chat.common;
 
-
 public class RegistrationRequest extends Request {
     private String login;
     private String password;
@@ -10,19 +9,19 @@ public class RegistrationRequest extends Request {
         this.password = password;
     }
 
+    public void setId(int id) {
+        super.setId(id);
+    }
+    public int getId() {
+        return super.getId();
+    }
+
     public String getLogin() {
         return login;
     }
 
     public String getPassword() {
         return password;
-    }
-
-    @Override
-    public String toString() {
-        return "RegistrationRequest{" +
-                "login='" + login + '\'' +
-                '}';
     }
 
     @Override
@@ -41,5 +40,18 @@ public class RegistrationRequest extends Request {
         int result = login != null ? login.hashCode() : 0;
         result = 31 * result + (password != null ? password.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "RegistrationRequest{" +
+                "login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+    @Override
+    public String getSender() {
+        return login;
     }
 }

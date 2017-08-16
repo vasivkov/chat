@@ -1,93 +1,73 @@
 package com.vasivkov.chat.server;
 
-import com.vasivkov.chat.common.*;
-import com.vasivkov.chat.server.dao.MessageDao;
-import org.apache.commons.io.IOUtils;
+import com.vasivkov.chat.common.Request;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 public class ServerConnection implements Runnable {
-    private String login;
-    private ObjectInputStream ois;
-    private ObjectOutputStream oos;
-    private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
-    private MessageDao messageDao = new MessageDao();
 
-    public void setLogin(String login) {
-        this.login = login;
+    private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
+    private  int id;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
+    private BlockingQueue<Request> requests;
+    private boolean isAuthorized;
+    private boolean isConnected;
+
+    public ServerConnection() {
+    }
+
+    public ServerConnection(Socket socket, BlockingQueue<Request> requests, int id) {
+        this.requests = requests;
+        this.isAuthorized = false;
+        this.isConnected = true;
+        this.id = id;
+
+        try {
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create i/o sockets");
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (isConnected) {
+                Object object = ois.readObject();
+                if(object instanceof Request) {
+                    Request request = (Request) object;
+                    request.setId(this.id);
+                    requests.add(request);
+                }
+
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            LOGGER.error("Failed to read data from client", e);
+        }
     }
 
     public ObjectOutputStream getOos() {
         return oos;
     }
 
-    public ServerConnection(Socket socket) {
-        try {
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException e) {
-            LOGGER.fatal("Failed to create streams", e);
-            throw new RuntimeException(e);
-        }
+    public void setAuthorized(boolean authorized) {
+        isAuthorized = authorized;
     }
 
-    @Override
-    public void run() {
-        boolean isClientExit = false;
-        try {
-            while (!isClientExit) {
-                Object object = ois.readObject();
-                LOGGER.info("Received message " + object);
-                if (object instanceof Message) {
-                    Message message = (Message) object;
-                    message.setAuthor(login);
-                    messageDao.insertMessage(message);
-                    sendToAllClients(message);
-                } else if (object instanceof ClosedConnectionRequest) {
-                    Message message = new Message(login + " LEFT THE CHAT", "  ", new Date());
-                    sendToAllClients(message);
-                    Server.connectedClients.remove(login);
-                    isClientExit = true;
-                } else if (object instanceof Request) {
-                    Request request = (Request) object;
-                    Response response = MessageHandler.handle(request);
-                    if (response.isResult()) {
-                        login = request.getLogin();
-                        Server.connectedClients.put(login, this);
-                    }
-                    MessageTransportUtil.sendMessageWithRepeat(response, oos, 5);
-                    if (response.isResult()) {
-                        List<Message> list = messageDao.getLastTenMessages();
-                        for (Message message : list) {
-                            MessageTransportUtil.sendMessageNoGuarantee(message, oos);
-                        }
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            LOGGER.error("Failed to read from socket", e);
-
-        } finally {
-            IOUtils.closeQuietly(ois);
-            IOUtils.closeQuietly(oos);
-            LOGGER.info("Streams are closed. Client " + login + " is disconnected");
-        }
+    public boolean isAuthorized() {
+        return isAuthorized;
     }
 
-    private void sendToAllClients(Object o) {
-        for (Map.Entry<String, ServerConnection> entry : Server.connectedClients.entrySet()) {
-            if (!login.equals(entry.getKey())) {
-                MessageTransportUtil.sendMessageNoGuarantee(o, entry.getValue().getOos());
-            }
-        }
+    public void setConnected(boolean connected) {
+        isConnected = connected;
     }
+
 }
 

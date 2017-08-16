@@ -1,10 +1,7 @@
 package com.vasivkov.chat.client;
 
 import com.vasivkov.chat.client.util.ConsoleUtil;
-import com.vasivkov.chat.common.ClosedConnectionRequest;
-import com.vasivkov.chat.common.MessageTransportUtil;
-import com.vasivkov.chat.common.Request;
-import com.vasivkov.chat.common.Response;
+import com.vasivkov.chat.common.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -13,7 +10,6 @@ import java.net.Socket;
 public class ClientConnection {
     private static final Logger LOGGER = Logger.getLogger(ClientConnection.class.getName());
     private Socket socket;
-
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private BufferedReader br;
@@ -25,7 +21,7 @@ public class ClientConnection {
             oos = new ObjectOutputStream(socket.getOutputStream());
             br = new BufferedReader(new InputStreamReader(System.in));
         } catch (IOException e) {
-            LOGGER.fatal("Failed to create streams for reading and writing messages", e);
+            LOGGER.fatal("Failed to create streams for reading and writing messages from server", e);
             throw new RuntimeException(e);
         }
     }
@@ -33,7 +29,7 @@ public class ClientConnection {
     void connect() {
         boolean finished = false;
         while (!finished) {
-            System.out.println("For registration: R, for autoriation: A, for exit: E");
+            System.out.println("For registration: R, for authorization: A, for exit: Q");
             String choice = "";
             try {
                 choice = br.readLine();
@@ -41,7 +37,7 @@ public class ClientConnection {
                 LOGGER.error("Failed to read from console", e);
             }
 
-            Request rq = null;
+            Request rq;
             ClientCommands command = ClientCommands.of(choice.toUpperCase());
             switch (command) {
                 case AUTHORIZATION:
@@ -60,28 +56,29 @@ public class ClientConnection {
 
             try {
                 MessageTransportUtil.sendMessageWithRepeat(rq, oos, 5);
-                if (rq instanceof ClosedConnectionRequest) {
+                if (rq instanceof ClientLeftRequest) {
                     socket.close();
                     LOGGER.info("Socket has closed.");
                     return;
                 }
                 Object object = ois.readObject();
-                if (object instanceof Response) {
-                    Response response = (Response) object;
-                    if (response.isResult()) {
-                        System.out.println(response.getResponseMessage());
-
-                        Thread writingThread = new Thread(new ClientToServerMessageProcessor(oos, br));
+                if (object instanceof GeneralResponse) {
+                    GeneralResponse response = (GeneralResponse) object;
+                    if (response.isOutcome()) {
+                        System.out.println(response.getError());
+                        Thread writingThread = new Thread(new ClientToServerMessageProcessor(oos, br, socket));
                         Thread readingThread = new Thread(new ServerToClientMessageProcessor(ois));
                         writingThread.start();
                         readingThread.start();
                         finished = true;
+                        LOGGER.info("Connecting to chat success!");
                     } else {
-                        System.out.println(response.getResponseMessage());
+                        System.out.println(response.getError());
+                        LOGGER.info("Failed to connect to chat. " + response.getError());
                     }
                 }
             } catch (Exception e) {
-                LOGGER.error("Failed to get responce from server", e);
+                LOGGER.error("Failed to get response from server", e);
             }
         }
     }

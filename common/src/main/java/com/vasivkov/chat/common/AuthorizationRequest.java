@@ -1,8 +1,14 @@
 package com.vasivkov.chat.common;
 
 public class AuthorizationRequest extends Request {
+
     private String login;
     private String password;
+
+    @Override
+    public int getId() {
+        return super.getId();
+    }
 
     public AuthorizationRequest(String login, String password) {
         this.login = login;
@@ -17,11 +23,8 @@ public class AuthorizationRequest extends Request {
         return password;
     }
 
-    @Override
-    public String toString() {
-        return "AuthorizationRequest{" +
-                "login='" + login + '\'' +
-                '}';
+    public void setId(int id) {
+        super.setId(id);
     }
 
     @Override
@@ -31,7 +34,8 @@ public class AuthorizationRequest extends Request {
 
         AuthorizationRequest that = (AuthorizationRequest) o;
 
-        return (login != null ? login.equals(that.login) : that.login == null) && (password != null ? password.equals(that.password) : that.password == null);
+        if (login != null ? !login.equals(that.login) : that.login != null) return false;
+        return password != null ? password.equals(that.password) : that.password == null;
     }
 
     @Override
@@ -39,5 +43,18 @@ public class AuthorizationRequest extends Request {
         int result = login != null ? login.hashCode() : 0;
         result = 31 * result + (password != null ? password.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthorizationRequest{" +
+                "login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+    @Override
+    public String getSender() {
+        return login;
     }
 }

@@ -1,48 +1,88 @@
 package com.vasivkov.chat.server;
 
-
+import com.vasivkov.chat.server.handlers.MessageProcessor;
+import com.vasivkov.chat.common.Request;
+import com.vasivkov.chat.server.vo.ResponseWithRecipients;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Server {
-    static Map<String, ServerConnection> connectedClients = new ConcurrentHashMap<>();
+
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
+    private static final BlockingQueue<Request> requests = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<ResponseWithRecipients> responses = new LinkedBlockingQueue<>();
+    private static final Map<Integer, ServerConnection> connectedClients = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
+        verifyProgramArguments(args);
+
+        ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
+        LOGGER.info("Server started! Waiting for clients to connect...");
+
+        new Thread(new MessageSender(responses, connectedClients)).start();
+        new Thread(new MessageProcessor(requests, responses)).start();
+
+        waitConnection(serverSocket);
+    }
+
+    public static Map<Integer, ServerConnection> getConnectedClients() {
+        return connectedClients;
+    }
+
+    public static void addClient(Integer i, ServerConnection connection) {
+        connectedClients.put(i, connection);
+    }
+
+    private static void verifyProgramArguments(String[] args) {
         if (args.length != 1) {
             System.out.println("Wrong input argument!");
             System.exit(-1);
         }
-        ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
-        LOGGER.info("Server started");
-        Server.waitConnection(serverSocket);
+        Integer.parseInt(args[0]);
+    }
+
+    private static void closeSocketQuitely(Socket socket) {
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                LOGGER.error("Failed to close socket", e);
+            }
+        }
     }
 
     private static void waitConnection(ServerSocket serverSocket) {
         Socket socket = null;
+        int id = 0;
         try {
             while (true) {
                 socket = serverSocket.accept();
-                LOGGER.info("The client " + socket + " joined");
-                Thread thread = new Thread(new ServerConnection(socket));
-                thread.start();
+                ServerConnection serverConnection = new ServerConnection(socket, requests, id);
+                connectedClients.put(id, serverConnection);
+                System.out.println("connectedClients: " + connectedClients);
+                id++;
+                new Thread(serverConnection).start();
             }
         } catch (IOException e) {
             LOGGER.error("Failed to connect client", e);
         } finally {
-            if(socket!= null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            closeSocketQuitely(socket);
+        }
+    }
+
+    public static List<Integer> getAuthorizedClients(int id) {
+        List<Integer> resipients = new ArrayList<>();
+        for (Map.Entry<Integer, ServerConnection> pair : connectedClients.entrySet()) {
+            if (pair.getKey() != id && pair.getValue().isAuthorized()) {
+                resipients.add(pair.getKey());
             }
         }
+        return resipients;
     }
 }

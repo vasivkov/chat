@@ -2,9 +2,7 @@ package com.vasivkov.chat.server;
 
 import java.util.Date;
 
-/**
- * Created by vasya on 16/07/17.
- */
+
 public class User {
     private String login;
     private String password;

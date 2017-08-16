@@ -1,7 +1,8 @@
 package com.vasivkov.chat.client.util;
 
+import com.vasivkov.chat.client.Client;
 import com.vasivkov.chat.common.AuthorizationRequest;
-import com.vasivkov.chat.common.ClosedConnectionRequest;
+import com.vasivkov.chat.common.ClientLeftRequest;
 import com.vasivkov.chat.common.RegistrationRequest;
 import org.apache.log4j.Logger;
 
@@ -15,11 +16,12 @@ public class ConsoleUtil {
         try {
             System.out.print("Enter your login: ");
             String login = br.readLine();
+            Client.setLogin(login);
             System.out.print("Enter your password: ");
             String password = br.readLine();
             return new AuthorizationRequest(login, EncryptionUtil.generateHash(password));
         } catch (IOException e) {
-            LOGGER.error("Failed to read data from console to autorization", e);
+            LOGGER.error("Failed to read data from console to authorization", e);
             throw new RuntimeException(e);
         }
     }
@@ -28,17 +30,18 @@ public class ConsoleUtil {
         try {
             System.out.print("Think up your login: ");
             String login = br.readLine();
+            Client.setLogin(login);
             System.out.print("Think up the password: ");
             String password = br.readLine();
             return new RegistrationRequest(login, EncryptionUtil.generateHash(password));
         } catch (IOException e) {
-            LOGGER.error("Failed to read data from console to autorization", e);
+            LOGGER.error("Failed to read data from console to registration", e);
             throw new RuntimeException(e);
         }
     }
 
-    public static ClosedConnectionRequest dataForCloseingConnection() {
+    public static ClientLeftRequest dataForCloseingConnection() {
         System.out.println("BYE!");
-        return new ClosedConnectionRequest();
+        return new ClientLeftRequest();
     }
 }

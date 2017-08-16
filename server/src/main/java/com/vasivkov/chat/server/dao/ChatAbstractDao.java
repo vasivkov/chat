@@ -24,7 +24,7 @@ public class ChatAbstractDao {
             throw new RuntimeException();
         }
 
-        Connection connection = null;
+        Connection connection;
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
             LOGGER.info("Connecting to DB Success!");
@@ -39,6 +39,7 @@ public class ChatAbstractDao {
             try {
                 connection.close();
             } catch (SQLException e) {
+                LOGGER.error("Failed to close connection to database");
                 throw new RuntimeException(e);
             }
         }
